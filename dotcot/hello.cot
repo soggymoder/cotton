@@ -1,0 +1,5 @@
+print "HELLO FROM COT :D"
+wait 1
+print "THIS IS A SHOWCASE COT FILE"
+wait 1
+print "WORDS WORDS WORDS"
