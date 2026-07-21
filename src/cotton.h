@@ -3,9 +3,9 @@
 
 #include <stdint.h>
 
-#define MEMORY_SIZE  (1024 * 1024)
-#define VIDEO_WIDTH  200
-#define VIDEO_HEIGHT 125
+#define MEMORY_SIZE  (64 * 1024)
+#define VIDEO_WIDTH  250
+#define VIDEO_HEIGHT 200
 
 typedef struct
 {
