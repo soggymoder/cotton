@@ -3,7 +3,6 @@
 
 int cottonwindow_init(CottonWindow *cw, const char *title, int window_w, int window_h, int texture_w, int texture_h)
 {
-    SDL_Init(SDL_INIT_VIDEO);
 
     if (SDL_Init(SDL_INIT_VIDEO) != 0)
     {
@@ -25,7 +24,7 @@ int cottonwindow_init(CottonWindow *cw, const char *title, int window_w, int win
         return 0;
     }
 
-    cw->texture = SDL_CreateTexture(cw->renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_STREAMING, texture_w, texture_h);
+    cw->texture = SDL_CreateTexture(cw->renderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING, texture_w, texture_h);
     if (!cw->texture)
     {
         fprintf(stderr, "cotton couldn't apply textures :( : %s\n", SDL_GetError());
