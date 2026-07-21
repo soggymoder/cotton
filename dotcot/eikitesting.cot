@@ -1,0 +1,9 @@
+print "ABCDEFGHIJKL"
+print "MNOPQRSTUVWX"
+print "YZ"
+print "abcdefghijkl"
+print "mnopqrstuvwx"
+print "yz"
+
+print "1234567890"
+print "! ? ; : ."

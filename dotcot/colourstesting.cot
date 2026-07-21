@@ -1,0 +1,16 @@
+color black
+print "hi im dani, wish you could read this"
+color white
+print "text above is in black, hence why you dont see it"
+color geen
+print "chld was right we needed green"
+color rey
+print "rey,, its like,, grey,, but no g,,"
+color wist
+print "this is wist, i like this color"
+color wink
+print "this is wink, i like this color too"
+color laven
+print "im running out of ideas on what to say"
+color white
+print "back to normal!! :D"
