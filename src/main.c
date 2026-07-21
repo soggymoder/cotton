@@ -1,28 +1,45 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include "cotton.h"
 #include "cottonwindow.h"
 #include "interpreter.h"
 
 int main(int argc, char **argv)
 {
-    if (argc != 2)
+    //thank you chld for the idea of changing the scale and having it be optional ^^
+    int scale = 4;
+    char *filename = NULL;
+
+    if (argc == 4 && strcmp(argv[1], "-s") == 0)
     {
-        fprintf(stderr, "usage: cotton <file.cot>\n");
+        scale = atoi(argv[2]);
+        filename = argv[3];
+    }
+    else if (argc == 2)
+    {
+        filename = argv[1];
+    }
+    else
+    {
+        fprintf(stderr, "usage: cotton <-s scale (scale being 2 or 4)> <file.cot>\n");
         return 1;
     }
 
     CottonWindow cw;
 
-    if (!cottonwindow_init(&cw, "cotton", VIDEO_WIDTH * 4, VIDEO_HEIGHT * 4, VIDEO_WIDTH, VIDEO_HEIGHT))
+    if (!cottonwindow_init(&cw, "cotton", VIDEO_WIDTH * scale, VIDEO_HEIGHT * scale, VIDEO_WIDTH, VIDEO_HEIGHT))
+    {
         return 1;
+    }
 
     Cotton cotton;
     cotton_init(&cotton);
 
-    FILE *file = fopen(argv[1], "r");
+    FILE *file = fopen(filename, "r");
     if (!file)
     {
-        fprintf(stderr, "cotton couldn't open \"%s\" :(\n", argv[1]);
+        fprintf(stderr, "cotton couldn't open \"%s\" :(\n", filename);
         return 1;
     }
 
