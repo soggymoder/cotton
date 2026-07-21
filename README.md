@@ -1,6 +1,6 @@
 # cotton
 
-![cotton](cotton.png)
+![cotton](imgs/cotton.png)
 
 cotton is a tiny virtual computer that lives in a window. it originally had a chip-8 emulator as a base but i ended up rewriting the vast, VAST majority of it to my liking. cotton is heavily inspired by [uxn](https://100r.co/site/uxn.html) and a little bit by [pico-8](https://www.lexaloffle.com/pico-8.php) (go check both projects out, they're awesome!!).
 
@@ -27,8 +27,9 @@ as i said on at the top of this file, cot is being developed alongside cotton an
 
 ```
 print "blah blah blah"   # prints text to the screen
-wait 2                   # waits 2 seconds
+wait                     # waits for x seconds
 kill                     # exits cotton
+color                    # colors text (there are 7 options, this will be doccumented later but you can also see it on cotton.h)
 
 comments written as ' # '
 ```
@@ -41,19 +42,20 @@ this is more so a thing for me, but, i figured i'd explain it:
 
 you may notice there is a tools/ folder, in there you will find "eikimaker", a small program i made to help design the eiki font, i might expand on it at some point but for now it works just fine ^^
 
-## to-do
+## docs
 
-this list may and will be updated over time, but, as of now this is what i have in mind for cotton/cot
+as of writting this (early stages of cotton v0.2) there is no doccumentation, however, i plan to add it either this or next update :) 
 
-- [] `clear`, `color`, `input` fully implemented (for v0.2)
-- [] variables (`set` / `get`) (perhaps for v0.2..?)
-- [] `if` / `loop` (same as above)
-- [] sound
-- [] images (im not sure yet, i want to think of a unique way to implement it.. or not..)
-- [] more eiki font characters (i.e. lowercase, punctuation) & potential remake of the font overall
-- [] making a mascot (i already have one but im thinking of how to implement it as a feature or so x3)
-- [] a "main" .cot program actually worth showing off
+alot of what is said on this readme md file will prob end up being deleted in favour of being properly placed there xP
+
+## cotton's mascot
+
+![ton](imgs/ton.png)
+
+this is cotton's mascot!! his name is ton!! he was drawn by me using cotton's colour palette!! say hi to ton!! :3
 
 ## credits
 
 i'd like to thank [this guide](https://austinmorlan.com/posts/chip8_emulator/) for helping me figure out the initial base for cotton, even if 90% of it is gone by now, it helped me learn alot of stuff that i am now applying for cotton, awesome stuff ^^
+
+i'd also like to thank [chld](https://srcdump.net/chld/) for making a C port of eikimaker.go AND currently working on a haiku backend for cotton - both arent merged to the repo yet but im still very grateful for both :)
