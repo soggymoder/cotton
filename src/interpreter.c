@@ -59,7 +59,7 @@ static char *strip_quotes(char *s)
 
 static void draw_pixel(Cotton *cotton, int x, int y)
 {
-        cotton->video[y * VIDEO_WIDTH + x] = cotton->c_cottolette;
+    cotton->video[y * VIDEO_WIDTH + x] = cotton->c_cottolette;
 }
 
 static void draw_char(Cotton *cotton, char c, int x, int y)
