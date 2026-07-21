@@ -64,11 +64,11 @@ static void draw_pixel(Cotton *cotton, int x, int y, uint32_t color)
 
 static void draw_char(Cotton *cotton, char c, int x, int y)
 {
-    for (int row = 0; row < 5; row++)
+    for (int row = 0; row < FONT_HEIGHT; row++)
     {
         uint8_t bits = EIKI_FONT[(uint8_t)c][row];
 
-    for (int col = 0; col < 5; col++)
+    for (int col = 0; col < FONT_WIDTH; col++)
     {
 
         if (bits & (1 << col)) 
@@ -86,8 +86,8 @@ static void draw_char(Cotton *cotton, char c, int x, int y)
 static void cmd_print(Cotton *cotton, CottonWindow *cw, char *arg)
 {
     (void)cw;
-    
-    if (!arg) 
+
+    if (!arg)
         return;
 
     char *text = strip_quotes(arg);
@@ -96,28 +96,25 @@ static void cmd_print(Cotton *cotton, CottonWindow *cw, char *arg)
 
     for (int i = 0; text[i] != '\0'; i++)
     {
-        // when the limit of a line is reached we go down one line,, pmo when it just gluedtogehterlikethisacrosslinesaaaaaa
         if (text[i] == '\n')
         {
             cotton->cursor_x = 0;
-            cotton->cursor_y += 6; 
+            cotton->cursor_y += FONT_HEIGHT + 4;
             continue;
         }
 
         draw_char(cotton, text[i], cotton->cursor_x, cotton->cursor_y);
-        cotton->cursor_x += 6;
-        
-        // those who wrap
-        if (cotton->cursor_x + 6 >= VIDEO_WIDTH)
+        cotton->cursor_x += FONT_WIDTH + 2;
+
+        if (cotton->cursor_x + FONT_WIDTH + 2 >= VIDEO_WIDTH)
         {
             cotton->cursor_x = 0;
-            cotton->cursor_y += 6;
+            cotton->cursor_y += FONT_HEIGHT + 4;
         }
     }
 
     cotton->cursor_x = 0;
-    cotton->cursor_y += 6;
-
+    cotton->cursor_y += FONT_HEIGHT + 4;
 }
 
 static void cmd_wait(Cotton *cotton, char *arg)
