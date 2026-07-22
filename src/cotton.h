@@ -9,6 +9,10 @@
 
 #define COTTOLETTE_SIZE 7 // would be 6 but due to high demand we invited green into the mix because green is cool <3
 
+#define VARS         32 // i think this is enough,, not like cot programs can be that complex rn anyway :P
+#define VAR_NAME_LEN 16
+#define VAR_VAL_LEN  32
+
 // i might work on better names another time xP
 static const uint32_t COTTOLETTE[COTTOLETTE_SIZE] = 
 {
@@ -23,6 +27,12 @@ static const uint32_t COTTOLETTE[COTTOLETTE_SIZE] =
 
 typedef struct
 {
+    char name[VAR_NAME_LEN];
+    char value[VAR_VAL_LEN];
+} CotVar;
+
+typedef struct
+{
     uint8_t  memory[MEMORY_SIZE];
     uint32_t video[VIDEO_WIDTH * VIDEO_HEIGHT];
 
@@ -33,8 +43,12 @@ typedef struct
     uint32_t ticktock;
     uint32_t c_cottolette; //id write "current_cottolete" but that would be alot to type and im lazyyyyyyy bwaaaaaa
     
+    CotVar vars[VARS];
+    int    var_count;
+
 } Cotton;
 
 void cotton_init(Cotton *c);
+void cotton_store_var(Cotton *cotton, const char *name, const char *value);
 
 #endif

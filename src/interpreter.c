@@ -13,7 +13,7 @@
 #define MAX_LINE 256
 
 
-// da string stuff
+// da string AND variable stuff
 
 static void strip_newline(char *s)
 {
@@ -43,7 +43,7 @@ static char *strip_quotes(char *s)
 
         if (end == NULL)
         {
-            fprintf(stderr, "looks like you forgot a quote at the end xP\n");
+            fprintf(stderr, "cot syntax error : looks like you forgot a quote at the end xP\n");
             return s;
         }
 
@@ -54,6 +54,17 @@ static char *strip_quotes(char *s)
     return s;
 }
 
+static const char *get_var_value(Cotton *cotton, const char *name)
+{
+    for (int i = 0; i < cotton->var_count; i++)
+    {
+        if (strcmp(cotton->vars[i].name, name) == 0)
+        {
+            return cotton->vars[i].value;
+        }
+    }
+    return NULL;
+}
 
 // da graphics stuff
 
@@ -90,6 +101,12 @@ static void cmd_print(Cotton *cotton, CottonWindow *cw, char *arg)
 
     char *text = strip_quotes(arg);
 
+    const char *value = get_var_value(cotton, text);
+    if (value != NULL)
+    {
+        text = (char *)value;
+    }
+
     printf("%s\n", text);
 
     for (int i = 0; text[i] != '\0'; i++)
@@ -116,6 +133,25 @@ static void cmd_print(Cotton *cotton, CottonWindow *cw, char *arg)
 
     cottonwindow_update(cw, cotton->video, sizeof(cotton->video[0]) * VIDEO_WIDTH);
 
+}
+
+static void cmd_var(Cotton *cotton, char *arg)
+{
+    if (!arg)
+        return;
+
+    char *space = strchr(arg, ' ');
+    if (!space)
+    {
+        fprintf(stderr, "cot syntax error: you forgor to put a value for your variable xP\n");
+        return;
+    }
+
+    *space = '\0';
+    char *name = arg;
+    char *value = space + 1;
+
+    cotton_store_var(cotton, name, value);
 }
 
 static void cmd_wait(Cotton *cotton, char *arg)
@@ -173,7 +209,7 @@ static void cmd_color(Cotton *cotton, char *arg)
         cotton->c_cottolette = COTTOLETTE[6];
 
     else
-        fprintf(stderr, "cotton doesn't know the color \"%s\" sorry,, :(\n", arg);
+        fprintf(stderr, "cot syntax error: cotton doesn't know the color \"%s\" sorry,, :(\n", arg);
 }
 
 static void cmd_input(CottonWindow *cw, char *arg)
@@ -186,7 +222,7 @@ static void cmd_input(CottonWindow *cw, char *arg)
 
 static void cmd_unknown(const char *cmd)
 {
-    fprintf(stderr, "cotton doesn't know what \"%s\" means, care to type that out again? :<\n", cmd);
+    fprintf(stderr, "cot syntax error: cotton doesn't know what \"%s\" means, care to type that out again? :<\n", cmd);
 }
 
 
@@ -227,6 +263,11 @@ void cotton_interpret(Cotton *cotton, CottonWindow *cw, FILE *file)
     if (strcmp(cmd, "print") == 0)
     {
         cmd_print(cotton, cw, arg);
+    }
+
+    else if (strcmp(cmd, "var") == 0)
+    {
+        cmd_var(cotton, arg);
     }
 
     else if (strcmp(cmd, "clear") == 0)
