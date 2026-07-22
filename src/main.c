@@ -7,6 +7,10 @@
 
 int main(int argc, char **argv)
 {
+    
+    // added this specifically with the new user input command in mind, makes it so the terminal isnt so cluttered for when there is user input needed, atleast for me :P
+    printf("\033[2J\033[H");    
+
     //thank you chld for the idea of changing the scale and having it be optional ^^
     int scale = 4;
     char *filename = NULL;

@@ -212,12 +212,23 @@ static void cmd_color(Cotton *cotton, char *arg)
         fprintf(stderr, "cot syntax error: cotton doesn't know the color \"%s\" sorry,, :(\n", arg);
 }
 
-static void cmd_input(CottonWindow *cw, char *arg)
+static void cmd_input(Cotton *cotton, char *arg)
 {
-    (void)cw;
-    (void)arg;
+    if (!arg)
+    {
+        fprintf(stderr, "cotton syntax error: input needs a variable name xP\n");
+        return;
+    }
 
-    // will work on this for v0.2 or whenever it is that i add variables
+    char buffer[VAR_VAL_LEN];
+
+    // kind of a quick and dirty way of implementing input, i know, but, i cant be arsed to get myself into a potential rabbit hole with SDL so for now i will leave this to be this way,, sorry,,
+    if (fgets(buffer, sizeof(buffer), stdin) != NULL)
+    {
+        buffer[strcspn(buffer, "\r\n")] = '\0';
+
+        cotton_store_var(cotton, arg, buffer);
+    }
 }
 
 static void cmd_unknown(const char *cmd)
@@ -287,7 +298,7 @@ void cotton_interpret(Cotton *cotton, CottonWindow *cw, FILE *file)
 
     else if (strcmp(cmd, "input") == 0)
     {
-        cmd_input(cw, arg);
+        cmd_input(cotton, arg);
     }
 
     else if (strcmp(cmd, "kill") == 0)
