@@ -10,27 +10,23 @@ cottonwindow_init (CottonWindow *cw, const char *title, int window_w, int window
         return 0;
     }
 
-    cw->window =
-        SDL_CreateWindow(title, 0, 0, window_w, window_h, SDL_WINDOW_SHOWN);
+    cw->window = SDL_CreateWindow(title, 0, 0, window_w, window_h, SDL_WINDOW_SHOWN);
+    
     if (!cw->window) {
-        fprintf(stderr, "cotton couldn't create a window :( : %s\n",
-                SDL_GetError());
+        fprintf(stderr, "cotton couldn't create a window :( : %s\n", SDL_GetError());
         return 0;
     }
 
     cw->renderer = SDL_CreateRenderer(cw->window, -1, 0);
     if (!cw->renderer) {
-        fprintf(stderr, "cotton couldn't render this :( : %s\n",
-                SDL_GetError());
+        fprintf(stderr, "cotton couldn't render this :( : %s\n", SDL_GetError());
         return 0;
     }
 
     cw->texture =
-        SDL_CreateTexture(cw->renderer, SDL_PIXELFORMAT_ARGB8888,
-                          SDL_TEXTUREACCESS_STREAMING, texture_w, texture_h);
+        SDL_CreateTexture(cw->renderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING, texture_w, texture_h);
     if (!cw->texture) {
-        fprintf(stderr, "cotton couldn't apply textures :( : %s\n",
-                SDL_GetError());
+        fprintf(stderr, "cotton couldn't apply textures :( : %s\n", SDL_GetError());
         return 0;
     }
 

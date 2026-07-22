@@ -7,13 +7,9 @@
 #define VIDEO_WIDTH 250
 #define VIDEO_HEIGHT 200
 
-#define COTTOLETTE_SIZE                                                        \
-    7 // would be 6 but due to high demand we invited green into the mix because
-      // green is cool <3
+#define COTTOLETTE_SIZE  7 // would be 6 but due to high demand we invited green into the mix because green is cool <3
 
-#define VARS                                                                   \
-    32 // i think this is enough,, not like cot programs can be that complex rn
-       // anyway :P
+#define VARS 32 // i think this is enough,, not like cot programs can be that complex rn anyway :P
 #define VAR_NAME_LEN 16
 #define VAR_VAL_LEN 32
 

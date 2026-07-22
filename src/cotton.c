@@ -25,7 +25,7 @@ void cotton_store_var
         }
     }
 
-    if (cotton->var_count < VARS) {
+    if (cotton->var_count < VARS) { 
         strncpy(cotton->vars[cotton->var_count].name, name, VAR_NAME_LEN - 1);
         cotton->vars[cotton->var_count].name[VAR_NAME_LEN - 1] = '\0';
 
@@ -34,8 +34,6 @@ void cotton_store_var
 
         cotton->var_count++;
     } else {
-        fprintf(stderr,
-                "cotton ran out of variable slots :( - max ammount is %d\n",
-                VARS);
+        fprintf(stderr, "cotton ran out of variable slots :( - max ammount is %d\n", VARS);
     }
 }

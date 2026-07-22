@@ -42,8 +42,7 @@ static char
         char *end = strrchr(s, '"');
 
         if (end == NULL) {
-            fprintf(stderr, "cot syntax error : looks like you forgot a quote "
-                            "at the end xP\n");
+            fprintf(stderr, "cot syntax error : looks like you forgot a quote at the end xP\n");
             return s;
         }
 
@@ -124,8 +123,7 @@ static void cmd_print
     cotton->cursor_x = 0;
     cotton->cursor_y += FONT_HEIGHT + 4;
 
-    cottonwindow_update(cw, cotton->video,
-                        sizeof(cotton->video[0]) * VIDEO_WIDTH);
+    cottonwindow_update(cw, cotton->video, sizeof(cotton->video[0]) * VIDEO_WIDTH);
 }
 
 static void cmd_var
@@ -136,8 +134,7 @@ static void cmd_var
 
     char *space = strchr(arg, ' ');
     if (!space) {
-        fprintf(stderr, "cot syntax error: you forgor to put a value for your "
-                        "variable xP\n");
+        fprintf(stderr, "cot syntax error: you forgor to put a value for your variable xP\n");
         return;
     }
 
