@@ -89,8 +89,8 @@ static void draw_char
 
 // da commands
 
-static void cmd_print
-(Cotton *cotton, CottonWindow *cw, char *arg)
+static void 
+cmd_print(Cotton *cotton, CottonWindow *cw, char *arg)
 {
     if (!arg)
         return;
@@ -126,8 +126,8 @@ static void cmd_print
     cottonwindow_update(cw, cotton->video, sizeof(cotton->video[0]) * VIDEO_WIDTH);
 }
 
-static void cmd_var
-(Cotton *cotton, char *arg)
+static void 
+cmd_var(Cotton *cotton, char *arg)
 {
     if (!arg)
         return;
@@ -145,25 +145,8 @@ static void cmd_var
     cotton_store_var(cotton, name, value);
 }
 
-static void
-cmd_wait(Cotton *cotton, char *arg)
-{
-    if (!arg)
-        return;
-
-    int seconds = atoi(arg);
-
-    cotton->ticktock = SDL_GetTicks() + (seconds * 1000);
-}
-
 static void 
-cmd_kill(void)
-{
-    printf("[cotton stopped]\n");
-    exit(0);
-}
-
-static void cmd_clear(Cotton *cotton, CottonWindow *cw)
+cmd_clear(Cotton *cotton, CottonWindow *cw)
 {
     for (int i = 0; i < VIDEO_WIDTH * VIDEO_HEIGHT; i++) {
         cotton->video[i] = 0;
@@ -211,6 +194,17 @@ cmd_color(Cotton *cotton, char *arg)
 }
 
 static void 
+cmd_wait(Cotton *cotton, char *arg)
+{
+    if (!arg)
+        return;
+
+    int seconds = atoi(arg);
+
+    cotton->ticktock = SDL_GetTicks() + (seconds * 1000);
+}
+
+static void 
 cmd_input(Cotton *cotton, char *arg)
 {
     if (!arg) {
@@ -221,14 +215,75 @@ cmd_input(Cotton *cotton, char *arg)
 
     char buffer[VAR_VAL_LEN];
 
-    // kind of a quick and dirty way of implementing input, i know, but, i cant
-    // be arsed to get myself into a potential rabbit hole with SDL so for now i
-    // will leave this to be this way,, sorry,,
+    // kind of a quick and dirty way of implementing input, i know, but, i cant be arsed to get myself into a potential rabbit hole with SDL so for now i  will leave this to be this way,, sorry,,
     if (fgets(buffer, sizeof(buffer), stdin) != NULL) {
         buffer[strcspn(buffer, "\r\n")] = '\0';
 
         cotton_store_var(cotton, arg, buffer);
     }
+}
+
+static void 
+cmd_kill(void)
+{
+    printf("[cotton stopped]\n");
+    exit(0);
+}
+
+static void 
+cmd_math(Cotton *cotton, char *arg, char op)
+{
+    char var_name[64];
+    char value[64];
+
+    if (!arg || sscanf(arg, "%63s %63s", var_name, value) != 2) {
+        fprintf(stderr, "cot syntax error: usage is '<add, sub, mult, div> <variable> <number OR another variable>'\n");
+        return;
+    }
+
+    int current = 0;
+    int amount = 0;
+
+    // thank you clang for coming in clutch and telling me to make this const i forgor (skull emoji)
+    const char *var = get_var_value(cotton, var_name);
+    if (var) {
+        current = atoi(var);
+    }
+
+    // and this too, i love clang, clang is the best compiler evah !!!
+    const char *other = get_var_value(cotton, value);
+    if (other) {
+        amount = atoi(other);
+    } else {
+        amount = atoi(value);
+    }
+
+    switch (op) {
+        case '+':
+            current += amount;
+            break;
+
+        case '-':
+            current -= amount;
+            break;
+
+        case '*':
+            current *= amount;
+            break;
+
+        case '/':        
+            current /= amount;
+            break;
+
+        default:
+            fprintf(stderr, "cot syntax error: cot doesn't know what operator this is :( \n");
+            return;
+    }
+
+    char buffer[32];
+    sprintf(buffer, "%d", current);
+
+    cotton_store_var(cotton, var_name, buffer);
 }
 
 static void 
@@ -298,6 +353,22 @@ cotton_interpret(Cotton *cotton, CottonWindow *cw, FILE *file)
 
     else if (strcmp(cmd, "kill") == 0) {
         cmd_kill();
+    }
+
+    else if (strcmp(cmd, "add") == 0) {
+        cmd_math(cotton, arg, '+');
+    }
+
+    else if (strcmp(cmd, "sub") == 0) {
+        cmd_math(cotton, arg, '-');
+    }
+
+    else if (strcmp(cmd, "mult") == 0) {
+        cmd_math(cotton, arg, '*');
+    }
+
+    else if (strcmp(cmd, "div") == 0) {
+        cmd_math(cotton, arg, '/');
     }
 
     else {
