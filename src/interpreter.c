@@ -90,7 +90,7 @@ static void draw_char
 // da commands
 
 static void 
-cmd_print(Cotton *cotton, CottonWindow *cw, char *arg)
+cmd_pre_print(Cotton *cotton, CottonWindow *cw, char *arg, int newline) // idfk how else to rename this :sob:
 {
     if (!arg)
         return;
@@ -102,7 +102,12 @@ cmd_print(Cotton *cotton, CottonWindow *cw, char *arg)
         text = (char *)value;
     }
 
-    printf("%s\n", text);
+    if (newline) {
+        printf("%s\n", text);
+    } else {
+        printf("%s", text);
+        fflush(stdout);
+    }
 
     for (int i = 0; text[i] != '\0'; i++) {
         if (text[i] == '\n') {
@@ -120,10 +125,24 @@ cmd_print(Cotton *cotton, CottonWindow *cw, char *arg)
         }
     }
 
-    cotton->cursor_x = 0;
-    cotton->cursor_y += FONT_HEIGHT + 4;
-
+    if (newline) {
+        cotton->cursor_x = 0;
+        cotton->cursor_y += FONT_HEIGHT + 4;
+    }
+    
     cottonwindow_update(cw, cotton->video, sizeof(cotton->video[0]) * VIDEO_WIDTH);
+}
+
+static void 
+cmd_print(Cotton *cotton, CottonWindow *cw, char *arg)
+{
+    cmd_pre_print(cotton, cw, arg, 0);
+}
+
+static void 
+cmd_println(Cotton *cotton, CottonWindow *cw, char *arg)
+{
+    cmd_pre_print(cotton, cw, arg, 1);
 }
 
 static void 
@@ -155,8 +174,7 @@ cmd_clear(Cotton *cotton, CottonWindow *cw)
     cotton->cursor_x = 0;
     cotton->cursor_y = 0;
 
-    cottonwindow_update(cw, cotton->video,
-                        sizeof(cotton->video[0]) * VIDEO_WIDTH);
+    cottonwindow_update(cw, cotton->video, sizeof(cotton->video[0]) * VIDEO_WIDTH);
 }
 
 static void 
@@ -322,13 +340,15 @@ cotton_interpret(Cotton *cotton, CottonWindow *cw, FILE *file)
     if (!cmd)
         return;
 
-    // RELEASE THE KRAKE- I MEAN, RELEASE THE GREAT WALL OF COMMANDS !!!
-    // could i format this better? maybe,, but but i'd say this is readable and
-    // i think readability is gud so i will keep it nice and green,,, green!! :D
+    // RELEASE THE KRAKE- I MEAN, RELEASE THE GREAT WALL OF COMMANDS !!! could i format this better? maybe,, but but i'd say this is readable and i think readability is gud so i will keep it nice and green,,, green!! :D
     char *arg = get_arg(line);
 
     if (strcmp(cmd, "print") == 0) {
         cmd_print(cotton, cw, arg);
+    }
+
+    else if (strcmp(cmd, "println") == 0) {
+        cmd_println(cotton, cw, arg);
     }
 
     else if (strcmp(cmd, "var") == 0) {
