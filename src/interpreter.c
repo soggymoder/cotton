@@ -142,6 +142,26 @@ cmd_print(Cotton *cotton, CottonWindow *cw, char *arg)
 }
 
 static void 
+cmd_pixel(Cotton *cotton, CottonWindow *cw, char *arg)
+{
+    int x, y;
+
+    if (!arg || sscanf(arg, "%d %d", &x, &y) != 2) {
+        fprintf(stderr, "cot syntax error: usage for pixel is 'pixel <x> <y>' :P\n");
+        return;
+    }
+
+    if (x < 0 || x >= VIDEO_WIDTH || y < 0 || y >= VIDEO_HEIGHT) {
+        fprintf(stderr, "cot syntax error: pixel (%d, %d) is out of bounds :<\n", x, y);
+        return;
+    }
+
+    draw_pixel(cotton, x, y);
+
+    cottonwindow_update(cw, cotton->video, sizeof(cotton->video[0]) * VIDEO_WIDTH);
+}
+
+static void 
 cmd_var(Cotton *cotton, char *arg)
 {
     if (!arg)
@@ -201,10 +221,7 @@ cmd_color(Cotton *cotton, char *arg)
         cotton->c_cottolette = COTTOLETTE[6];
 
     else
-        fprintf(stderr,
-                "cot syntax error: cotton doesn't know the color \"%s\" "
-                "sorry,, :(\n",
-                arg);
+        fprintf(stderr, "cot syntax error: cotton doesn't know the color \"%s\" sorry,, :(\n", arg);
 }
 
 static void 
@@ -222,8 +239,7 @@ static void
 cmd_input(Cotton *cotton, char *arg)
 {
     if (!arg) {
-        fprintf(stderr,
-                "cotton syntax error: input needs a variable name xP\n");
+        fprintf(stderr, "cotton syntax error: input needs a variable name xP\n");
         return;
     }
 
@@ -341,6 +357,10 @@ cotton_interpret(Cotton *cotton, CottonWindow *cw, FILE *file)
 
     if (strcmp(cmd, "print") == 0) {
         cmd_print(cotton, cw, arg);
+    }
+
+    else if (strcmp(cmd, "pixel") == 0) {
+        cmd_pixel(cotton, cw, arg);
     }
 
     else if (strcmp(cmd, "var") == 0) {
