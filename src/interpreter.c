@@ -53,8 +53,8 @@ static char
     return s;
 }
 
-static const char *get_var_value
-(Cotton *cotton, const char *name)
+static const char
+*get_var_value(Cotton *cotton, const char *name)
 {
     for (int i = 0; i < cotton->var_count; i++) {
         if (strcmp(cotton->vars[i].name, name) == 0) {
@@ -66,14 +66,14 @@ static const char *get_var_value
 
 // da graphics stuff
 
-static void draw_pixel
-(Cotton *cotton, int x, int y)
+static void 
+draw_pixel (Cotton *cotton, int x, int y)
 {
     cotton->video[y * VIDEO_WIDTH + x] = cotton->c_cottolette;
 }
 
-static void draw_char
-(Cotton *cotton, char c, int x, int y)
+static void 
+draw_char (Cotton *cotton, char c, int x, int y)
 {
     for (int row = 0; row < FONT_HEIGHT; row++) {
         uint8_t bits = EIKI_FONT[(uint8_t)c][row];
@@ -90,10 +90,18 @@ static void draw_char
 // da commands
 
 static void 
-cmd_pre_print(Cotton *cotton, CottonWindow *cw, char *arg, int newline) // idfk how else to rename this :sob:
+cmd_print(Cotton *cotton, CottonWindow *cw, char *arg)
 {
     if (!arg)
         return;
+
+    int nl = 0;
+    char *nl_str = strstr(arg, " /n");
+
+    if (nl_str != NULL) {
+        nl = 1;
+        *nl_str = '\0';
+    }
 
     char *text = strip_quotes(arg);
 
@@ -102,7 +110,7 @@ cmd_pre_print(Cotton *cotton, CottonWindow *cw, char *arg, int newline) // idfk 
         text = (char *)value;
     }
 
-    if (newline) {
+    if (nl) {
         printf("%s\n", text);
     } else {
         printf("%s", text);
@@ -125,24 +133,12 @@ cmd_pre_print(Cotton *cotton, CottonWindow *cw, char *arg, int newline) // idfk 
         }
     }
 
-    if (newline) {
+    if (nl) {
         cotton->cursor_x = 0;
         cotton->cursor_y += FONT_HEIGHT + 4;
     }
-    
+
     cottonwindow_update(cw, cotton->video, sizeof(cotton->video[0]) * VIDEO_WIDTH);
-}
-
-static void 
-cmd_print(Cotton *cotton, CottonWindow *cw, char *arg)
-{
-    cmd_pre_print(cotton, cw, arg, 0);
-}
-
-static void 
-cmd_println(Cotton *cotton, CottonWindow *cw, char *arg)
-{
-    cmd_pre_print(cotton, cw, arg, 1);
 }
 
 static void 
@@ -326,8 +322,8 @@ cotton_interpret(Cotton *cotton, CottonWindow *cw, FILE *file)
 
     strip_newline(line);
 
-    // cot shall use # comments like C because C is cool and i love C so bwaaa
-    if (line[0] == '\0' || line[0] == '#')
+    // there used to be a joke about cot using # comments "like C" which was an inside joke but after this being pointed out because of genuine curiosity i decided to just change the comments in cot to //, more used to that anyway bwaa
+    if (line[0] == '\0' || line[0] == '//')
         return;
 
     char line_copy[MAX_LINE];
@@ -345,10 +341,6 @@ cotton_interpret(Cotton *cotton, CottonWindow *cw, FILE *file)
 
     if (strcmp(cmd, "print") == 0) {
         cmd_print(cotton, cw, arg);
-    }
-
-    else if (strcmp(cmd, "println") == 0) {
-        cmd_println(cotton, cw, arg);
     }
 
     else if (strcmp(cmd, "var") == 0) {
