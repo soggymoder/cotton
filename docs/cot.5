@@ -1,0 +1,52 @@
+.Dd July 2026
+.Dt COT 5
+.Os cotton 0.2
+.Sh NAME
+.Nm cot
+.Nd the cot programming language
+
+.Sh DESCRIPTION
+
+cot is a small (both in size and features) interpreted programming language made
+to be simple, easily readable, approachable and to be used FOR cotton(1).
+
+cot's development is being made side by side with cotton's development, as such,
+both are built with eachother in mind.
+
+cotton's keywords are called "commands" , below is a reference list of every command
+in cot (as of cotton 0.2) and how to use it properly.
+
+.Sh COMMANDS
+.Bl -tag -width "pixel Ar (x) (y) (color)"
+.It Ic print Ar (text)
+Prints text to the screen.
+.It Ic wait Ar (seconds)
+Waits for an x ammount of seconds.
+.It Ic kill
+Kills the ongoing cotton process.
+.It Ic color Ar (color)
+Colors text (there are 7 options, which can be seen in cotton.h!! i'd list them here but blehhh).
+.It Ic var Ar (name) (value)
+Assigns a value to a variable.
+.It Ic add Ar (var) (value)
+Adds a value to a variable.
+.It Ic sub Ar (var) (value)
+Subtracts a value from a variable.
+.It Ic mult Ar (var) (value)
+Multiplies a variable by a value.
+.It Ic div Ar (var) (value)
+Divides a variable by a value.
+.It Ic pixel Ar (x) (y) (color)
+Draws a pixel at the specified coordinates (this will be probably be a bit adjusted in the future).
+.It Ic clear
+Clears whatever is currently on the screen.
+.It Ic input Ar (var)
+Waits for user input and stores it in a variable.
+.El
+
+NOTE: some of the commands above are subject to change given that cot(ton) has yet to reach it's first stable release - even then, any update to any command will be doccumented here and i will also do my best to not break the whole syntax every update ;w;
+
+.Sh SEE ALSO
+.Xr cotton 1 ,
+.Xr eiki 5
+

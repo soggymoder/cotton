@@ -1,0 +1,23 @@
+.Dd July 2026
+.Dt EIKIMAKER 1
+.Os cotton 0.2
+.Sh NAME
+.Nm eikimaker
+.Nd the Eiki font character generator utility for cotton
+
+.Sh SYNOPSIS
+.Nm ./eikimaker
+
+.Sh DESCRIPTION
+
+eikimaker is an interactive CLI utility written in Go that generates custom 6x8 pixel bitmap font
+characters for the cotton(1) ecosystem - despite the name, i incentivate anyone who may want to
+make their own font to use eikimaker as a means to do so!!
+
+when used, eikimaker prompts the user for a target character and then proceduraly displays an 8 row grid as the user draws their character
+- when done, it then packs each row into a byte representation and it sends the result directly into an eikis.txt file.
+
+.Sh SEE ALSO
+.Xr cotton 1 ,
+.Xr cot 5 ,
+.Xr eiki 5

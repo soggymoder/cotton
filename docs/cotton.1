@@ -1,0 +1,36 @@
+.Dd July 2026
+.Dt COTTON 1
+.Os cotton 0.2
+.Sh NAME
+.Nm cotton
+.Nd a tiny virtual computer that lives in your windows
+
+.Sh SYNOPSIS
+.Nm
+.Op Fl s Ar scale
+.Ar file.cot
+
+.Sh DESCRIPTION
+
+cotton is a tiny virtual computer that lives in a window. It has 64 KiB of memory
+and runs programs written in the cot(5) programming language.
+
+cotton was originally based on a CHIP-8 emulator, but has since evolved into its
+own thing inspired by uxn (go check it out, its an amazing project!!) and the concept of
+a small, easy-to-understand virtual computer.
+
+cotton is a passion pet project and while i do get alot of suggestions via my friends,
+i am the only and main developer of it, so, don't expect anything grandiouse or of perfect quality,
+at the end of the day this is all a big learning project that im taking at my own pace!! xP
+
+.Sh OPTIONS
+.Bl -tag -width "-s Ar scale"
+.It Fl s Ar (scale)
+changes the size multiplier of the cotton window (as of cotton 0.2 there is only 2 or 4).
+.El
+
+.Sh SEE ALSO
+.Xr cot 5 ,
+.Xr eiki 5 ,
+.Xr eikimaker 1
+
