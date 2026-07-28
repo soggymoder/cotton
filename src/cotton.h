@@ -7,22 +7,22 @@
 #define VIDEO_WIDTH 250
 #define VIDEO_HEIGHT 200
 
-#define COTTOLETTE_SIZE  7 // would be 6 but due to high demand we invited green into the mix because green is cool <3
+#define COTTOLETTE_SIZE  8
 
 #define VARS 32 // i think this is enough,, not like cot programs can be that complex rn anyway :P
 #define VAR_NAME_LEN 16
 #define VAR_VAL_LEN 32
 
-// i might work on better names another time xP
 static const uint32_t 
 COTTOLETTE[COTTOLETTE_SIZE] = {
-    0xFF000000, // 0 - black
-    0xFFFFFFFF, // 1 - white
-    0xFF28262C, // 2 - rey
-    0xFFA9A0CF, // 3 - wist
-    0xFFE4D8FD, // 4 - wink
-    0xFFF9F5FF, // 5 - laven
-    0xFFD0F0C0, // 6 - the dude nobody invited (geen)
+    0xFF1C1C1C, // 0 - blabla
+    0xFFFAFAFA, // 1 - whie
+    0xFFECE3FF, // 2 - lav
+    0xFFE4D8FD, // 3 - wink
+    0xFFD4C5F5, // 4 - sink
+    0xFFA9A0CF, // 5 - wist
+    0xFFFFFBDA, // 6 - yebow (random kid)
+    0xFFD0F0C0  // 7 - geen (the (first) dude nobody invited)
 };
 
 typedef struct
@@ -56,3 +56,4 @@ void cotton_store_var
 (Cotton *cotton, const char *name, const char *value);
 
 #endif
+

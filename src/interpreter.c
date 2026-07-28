@@ -192,32 +192,35 @@ cmd_clear(Cotton *cotton, CottonWindow *cw)
     cottonwindow_update(cw, cotton->video, sizeof(cotton->video[0]) * VIDEO_WIDTH);
 }
 
-static void 
+static void
 cmd_color(Cotton *cotton, char *arg)
 {
     if (!arg)
         return;
 
-    if (strcmp(arg, "black") == 0)
+    if (strcmp(arg, "blabla") == 0)
         cotton->c_cottolette = COTTOLETTE[0];
 
-    else if (strcmp(arg, "white") == 0)
+    else if (strcmp(arg, "whie") == 0)
         cotton->c_cottolette = COTTOLETTE[1];
 
-    else if (strcmp(arg, "rey") == 0)
+    else if (strcmp(arg, "lav") == 0)
         cotton->c_cottolette = COTTOLETTE[2];
 
-    else if (strcmp(arg, "wist") == 0)
+    else if (strcmp(arg, "wink") == 0)
         cotton->c_cottolette = COTTOLETTE[3];
 
-    else if (strcmp(arg, "wink") == 0)
+    else if (strcmp(arg, "sink") == 0)
         cotton->c_cottolette = COTTOLETTE[4];
 
-    else if (strcmp(arg, "laven") == 0)
+    else if (strcmp(arg, "wist") == 0)
         cotton->c_cottolette = COTTOLETTE[5];
 
-    else if (strcmp(arg, "geen") == 0)
+    else if (strcmp(arg, "yebow") == 0)
         cotton->c_cottolette = COTTOLETTE[6];
+
+    else if (strcmp(arg, "geen") == 0)
+        cotton->c_cottolette = COTTOLETTE[7];
 
     else
         fprintf(stderr, "cot syntax error: cotton doesn't know the color \"%s\" sorry,, :(\n", arg);
