@@ -1,10 +1,9 @@
-// i got to eventually clean up this file a bit i feel like its very janky but i
-// suppose i can worry about that later
+// i got to eventually clean up this file a bit i feel like its very janky but i suppose i can worry about that later
 
 #include "interpreter.h"
 #include "cottonwindow.h"
 #include "eiki.h"
-#include <SDL2/SDL.h>
+#include <SDL.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -338,8 +337,8 @@ cotton_interpret(Cotton *cotton, CottonWindow *cw, FILE *file)
 
     strip_newline(line);
 
-    // there used to be a joke about cot using # comments "like C" which was an inside joke but after this being pointed out because of genuine curiosity i decided to just change the comments in cot to //, more used to that anyway bwaa
-    if (line[0] == '\0' || line[0] == '//')
+// there used to be a joke about cot using # comments "like C" which was an inside joke but after this being pointed out because of genuine curiosity i decided to just change the comments in cot to //, more used to that anyway bwaa
+        if (line[0] == '\0' || (line[0] == '/' && line[1] == '/')) // thank you for the fix emilia!! :D
         return;
 
     char line_copy[MAX_LINE];

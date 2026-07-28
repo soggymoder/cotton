@@ -1,7 +1,7 @@
 #ifndef COTTONWINDOW_H
 #define COTTONWINDOW_H
 
-#include <SDL2/SDL.h>
+#include <SDL.h>
 #include <stdint.h>
 
 typedef struct
