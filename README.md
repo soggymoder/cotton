@@ -39,4 +39,6 @@ i'd like to thank [this guide](https://austinmorlan.com/posts/chip8_emulator/) f
 
 i'd also like to thank [chld](https://srcdump.net/chld/) for making a C port of eikimaker.go AND currently working on a haiku backend for cotton - both arent merged to the repo yet but im still very grateful for both :)
 
+i'd like to thank [emilia](https://srcdump.net/emilia9/) for the patches to add *BSD support and fix the compiler warning for the comments :D
+
 and also [pita](https://pita.im/), [lotte](https://srcdump.net/lotte/), [merc](https://merc.4plt.ch/) and [shrub](https://shrub.industries/) (in no particular order) for all of the cool suggestions and guidance for cotton as of the release of v0.2, thank you so much!! :D
