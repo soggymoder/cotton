@@ -1,4 +1,4 @@
-// i got to eventually clean up this file a bit i feel like its very janky but i suppose i can worry about that later
+// i got to eventually clean up this file a bit i feel like its very janky but i suppose i can worry about that later - future dani here, it seems you ended up just remaking the entire file bc you thought remaking cot into a concatenated language was cooler, good job dani - future future dani here, thank you dani :D
 
 #include "interpreter.h"
 #include "cottonwindow.h"
@@ -7,405 +7,267 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <unistd.h>
+#include <ctype.h>
 
-// maximum length of a .cot file line
 #define MAX_LINE 256
 
-// da string AND variable stuff
-
-static void 
-strip_newline(char *s) 
+// da stack 
+static void push
+(Cotton *c, int v)
 {
-     s[strcspn(s, "\r\n")] = 0; 
-}
-
-static char 
-*get_arg (char *line)
-{
-    char *space = strchr(line, ' ');
-
-    if (space != NULL) {
-        return space + 1;
+    if (c->stack_p >= 64) {
+        fprintf(stderr, "cot: there has been a stack overflow :< (like the website badumptsss)\n");
+        return;
     }
 
-    else {
-        return NULL;
-    }
+    c->stack[c->stack_p++] = v;
 }
 
-static char 
-*strip_quotes(char *s)
+static int pop
+(Cotton *c)
 {
-    if (s[0] == '"') {
-        char *end = strrchr(s, '"');
-
-        if (end == NULL) {
-            fprintf(stderr, "cot syntax error : looks like you forgot a quote at the end xP\n");
-            return s;
-        }
-
-        *end = '\0';
-        return s + 1;
+    if (c->stack_p <= 0) {
+        fprintf(stderr, "cot: there has been a stack underflow :<\n");
+        return 0;
     }
 
-    return s;
+    return c->stack[--c->stack_p];
 }
 
-static const char
-*get_var_value(Cotton *cotton, const char *name)
+// da variable stuff
+static int find_var
+(Cotton *c, const char *name)
 {
-    for (int i = 0; i < cotton->var_count; i++) {
-        if (strcmp(cotton->vars[i].name, name) == 0) {
-            return cotton->vars[i].value;
-        }
+    for (int i = 0; i < c->var_count; i++) {
+        if (strcmp(c->vars[i].name, name) == 0) return i;
     }
-    return NULL;
+
+    return -1;
 }
 
-// da graphics stuff
-
-static void 
-draw_pixel (Cotton *cotton, int x, int y)
+static void add_var
+(Cotton *c, const char *name)
 {
-    cotton->video[y * VIDEO_WIDTH + x] = cotton->c_cottolette;
+    if (c->var_count >= VARS) {
+        fprintf(stderr, "cot: too many variables\n");
+        return;
+    }
+
+    strncpy(c->vars[c->var_count].name, name, VAR_NAME_LEN - 1);
+    c->vars[c->var_count].name[VAR_NAME_LEN - 1] = '\0';
+    strcpy(c->vars[c->var_count].value, "0");
+    c->var_count++;
 }
 
-static void 
-draw_char (Cotton *cotton, char c, int x, int y)
+// da graphics
+static void draw_pixel_c
+(Cotton *c, int x, int y)
+{
+   	if (x < 0 || x >= VIDEO_WIDTH || y < 0 || y >= VIDEO_HEIGHT) return;
+    c->video[y * VIDEO_WIDTH + x] = c->c_cottolette;
+}
+
+static void draw_char_c
+(Cotton *c, char ch, int x, int y)
 {
     for (int row = 0; row < FONT_HEIGHT; row++) {
-        uint8_t bits = EIKI_FONT[(uint8_t)c][row];
+        uint8_t bits = EIKI_FONT[(uint8_t)ch][row];
 
         for (int col = 0; col < FONT_WIDTH; col++) {
-
             if (bits & (1 << col)) {
-                draw_pixel(cotton, x + col, y + row);
+                draw_pixel_c(c, x + col, y + row);
             }
         }
     }
 }
 
-// da commands
-
-static void 
-cmd_print(Cotton *cotton, CottonWindow *cw, char *arg)
-{
-    if (!arg)
-        return;
-
-    int nl = 0;
-    char *nl_str = strstr(arg, " /n");
-
-    if (nl_str != NULL) {
-        nl = 1;
-        *nl_str = '\0';
-    }
-
-    char *text = strip_quotes(arg);
-
-    const char *value = get_var_value(cotton, text);
-    if (value != NULL) {
-        text = (char *)value;
-    }
-
-    if (nl) {
-        printf("%s\n", text);
-    } else {
-        printf("%s", text);
-        fflush(stdout);
-    }
-
-    for (int i = 0; text[i] != '\0'; i++) {
-        if (text[i] == '\n') {
-            cotton->cursor_x = 0;
-            cotton->cursor_y += FONT_HEIGHT + 4;
-            continue;
-        }
-
-        draw_char(cotton, text[i], cotton->cursor_x, cotton->cursor_y);
-        cotton->cursor_x += FONT_WIDTH + 2;
-
-        if (cotton->cursor_x + FONT_WIDTH + 2 >= VIDEO_WIDTH) {
-            cotton->cursor_x = 0;
-            cotton->cursor_y += FONT_HEIGHT + 4;
-        }
-    }
-
-    if (nl) {
-        cotton->cursor_x = 0;
-        cotton->cursor_y += FONT_HEIGHT + 4;
-    }
-
-    cottonwindow_update(cw, cotton->video, sizeof(cotton->video[0]) * VIDEO_WIDTH);
-}
-
-static void 
-cmd_pixel(Cotton *cotton, CottonWindow *cw, char *arg)
-{
-    int x, y;
-
-    if (!arg || sscanf(arg, "%d %d", &x, &y) != 2) {
-        fprintf(stderr, "cot syntax error: usage for pixel is 'pixel <x> <y>' :P\n");
-        return;
-    }
-
-    if (x < 0 || x >= VIDEO_WIDTH || y < 0 || y >= VIDEO_HEIGHT) {
-        fprintf(stderr, "cot syntax error: pixel (%d, %d) is out of bounds :<\n", x, y);
-        return;
-    }
-
-    draw_pixel(cotton, x, y);
-
-    cottonwindow_update(cw, cotton->video, sizeof(cotton->video[0]) * VIDEO_WIDTH);
-}
-
-static void 
-cmd_var(Cotton *cotton, char *arg)
-{
-    if (!arg)
-        return;
-
-    char *space = strchr(arg, ' ');
-    if (!space) {
-        fprintf(stderr, "cot syntax error: you forgor to put a value for your variable xP\n");
-        return;
-    }
-
-    *space = '\0';
-    char *name = arg;
-    char *value = space + 1;
-
-    cotton_store_var(cotton, name, value);
-}
-
-static void 
-cmd_clear(Cotton *cotton, CottonWindow *cw)
-{
-    for (int i = 0; i < VIDEO_WIDTH * VIDEO_HEIGHT; i++) {
-        cotton->video[i] = 0;
-    }
-
-    cotton->cursor_x = 0;
-    cotton->cursor_y = 0;
-
-    cottonwindow_update(cw, cotton->video, sizeof(cotton->video[0]) * VIDEO_WIDTH);
-}
-
-static void
-cmd_color(Cotton *cotton, char *arg)
-{
-    if (!arg)
-        return;
-
-    if (strcmp(arg, "blabla") == 0)
-        cotton->c_cottolette = COTTOLETTE[0];
-
-    else if (strcmp(arg, "whie") == 0)
-        cotton->c_cottolette = COTTOLETTE[1];
-
-    else if (strcmp(arg, "lav") == 0)
-        cotton->c_cottolette = COTTOLETTE[2];
-
-    else if (strcmp(arg, "wink") == 0)
-        cotton->c_cottolette = COTTOLETTE[3];
-
-    else if (strcmp(arg, "sink") == 0)
-        cotton->c_cottolette = COTTOLETTE[4];
-
-    else if (strcmp(arg, "wist") == 0)
-        cotton->c_cottolette = COTTOLETTE[5];
-
-    else if (strcmp(arg, "yebow") == 0)
-        cotton->c_cottolette = COTTOLETTE[6];
-
-    else if (strcmp(arg, "geen") == 0)
-        cotton->c_cottolette = COTTOLETTE[7];
-
-    else
-        fprintf(stderr, "cot syntax error: cotton doesn't know the color \"%s\" sorry,, :(\n", arg);
-}
-
-static void 
-cmd_wait(Cotton *cotton, char *arg)
-{
-    if (!arg)
-        return;
-
-    int seconds = atoi(arg);
-
-    cotton->ticktock = SDL_GetTicks() + (seconds * 1000);
-}
-
-static void 
-cmd_input(Cotton *cotton, char *arg)
-{
-    if (!arg) {
-        fprintf(stderr, "cotton syntax error: input needs a variable name xP\n");
-        return;
-    }
-
-    char buffer[VAR_VAL_LEN];
-
-    // kind of a quick and dirty way of implementing input, i know, but, i cant be arsed to get myself into a potential rabbit hole with SDL so for now i  will leave this to be this way,, sorry,,
-    if (fgets(buffer, sizeof(buffer), stdin) != NULL) {
-        buffer[strcspn(buffer, "\r\n")] = '\0';
-
-        cotton_store_var(cotton, arg, buffer);
-    }
-}
-
-static void 
-cmd_kill(void)
-{
-    printf("[cotton stopped]\n");
-    exit(0);
-}
-
-static void 
-cmd_math(Cotton *cotton, char *arg, char op)
-{
-    char var_name[64];
-    char value[64];
-
-    if (!arg || sscanf(arg, "%63s %63s", var_name, value) != 2) {
-        fprintf(stderr, "cot syntax error: usage is '<add, sub, mult, div> <variable> <number OR another variable>'\n");
-        return;
-    }
-
-    int current = 0;
-    int amount = 0;
-
-    // thank you clang for coming in clutch and telling me to make this const i forgor (skull emoji)
-    const char *var = get_var_value(cotton, var_name);
-    if (var) {
-        current = atoi(var);
-    }
-
-    // and this too, i love clang, clang is the best compiler evah !!!
-    const char *other = get_var_value(cotton, value);
-    if (other) {
-        amount = atoi(other);
-    } else {
-        amount = atoi(value);
-    }
-
-    switch (op) {
-        case '+':
-            current += amount;
-            break;
-
-        case '-':
-            current -= amount;
-            break;
-
-        case '*':
-            current *= amount;
-            break;
-
-        case '/':        
-            current /= amount;
-            break;
-
-        default:
-            fprintf(stderr, "cot syntax error: cot doesn't know what operator this is :( \n");
-            return;
-    }
-
-    char buffer[32];
-    sprintf(buffer, "%d", current);
-
-    cotton_store_var(cotton, var_name, buffer);
-}
-
-static void 
-cmd_unknown(const char *cmd)
-{
-    fprintf(stderr,
-            "cot syntax error: cotton doesn't know what \"%s\" means, care to "
-            "type that out again? :<\n",
-            cmd);
-}
-
-// da interpreter loop
-
-void 
-cotton_interpret(Cotton *cotton, CottonWindow *cw, FILE *file)
+// those who interpretate skull emoji skull emoji nahhhh get outttttttttt skull emoji door emoji
+void cotton_interpret
+(Cotton *c, CottonWindow *cw, FILE *file)
 {
     char line[MAX_LINE];
+    if (!fgets(line, sizeof(line), file)) return;
+    
+    line[strcspn(line, "\r\n")] = 0;
+    if (line[0] == '\0' || (line[0] == '/' && line[1] == '/')) return;
+    
+    char *tok = strtok(line, " ");
+    
+    while (tok) {
 
-    // this reads the file one line at a time until we get to da end of da file
-    if (!fgets(line, sizeof(line), file))
-        return;
+        int is_a_num = 1;
+        for (int i = 0; tok[i]; i++) {
+            if (!isdigit(tok[i]) && !(i == 0 && tok[i] == '-')) {
+                is_a_num = 0;
+                break;
+            }
+        }
+        
+        if (is_a_num) {
+            push(c, atoi(tok));
+        }
 
-    strip_newline(line);
+		// those who do math..., math from the epic video gaem baldi's basics in education and learning,., you guys should play it its a good game i like baldi,. send me an email telling me your guys' PR on endless mode 
+        else if (strcmp(tok, "+") == 0) {
+            int b = pop(c), a = pop(c);
+            push(c, a + b);
+        }
 
-// there used to be a joke about cot using # comments "like C" which was an inside joke but after this being pointed out because of genuine curiosity i decided to just change the comments in cot to //, more used to that anyway bwaa
-        if (line[0] == '\0' || (line[0] == '/' && line[1] == '/')) // thank you for the fix emilia!! :D
-        return;
+        else if (strcmp(tok, "-") == 0) {
+            int b = pop(c), a = pop(c);
+            push(c, a - b);
+        }
 
-    char line_copy[MAX_LINE];
+        else if (strcmp(tok, "*") == 0) {
+            int b = pop(c), a = pop(c);
+            push(c, a * b);
+        }
 
-    strncpy(line_copy, line, MAX_LINE - 1);
-    line_copy[MAX_LINE - 1] = '\0';
+        else if (strcmp(tok, "/") == 0) {
+            int b = pop(c), a = pop(c);
+            push(c, a / b);
+        }
 
-    char *cmd = strtok(line_copy, " ");
+		// while forth does use ! and @, im quirky and #notlikeothergirls so im changing ! to -> bc i think it makes more sense :P
+        else if (strcmp(tok, "->") == 0) {
 
-    if (!cmd)
-        return;
+            int slot = pop(c);
+			int num = pop(c);
+			
+			if (slot >= 0 && slot < c->var_count) {
+                char buf[VAR_VAL_LEN];
+                sprintf(buf, "%d", num);
+                strncpy(c->vars[slot].value, buf, VAR_VAL_LEN - 1);
+			} 	
 
-    // RELEASE THE KRAKE- I MEAN, RELEASE THE GREAT WALL OF COMMANDS !!! could i format this better? maybe,, but but i'd say this is readable and i think readability is gud so i will keep it nice and green,,, green!! :D
-    char *arg = get_arg(line);
+			else {
+                fprintf(stderr, "cot: tried to store somewhere that don't exist.,. its in the void now.., :<\n");
+            }
+        }
 
-    if (strcmp(cmd, "print") == 0) {
-        cmd_print(cotton, cw, arg);
-    }
+        else if (strcmp(tok, "@") == 0) {
+            int slot = pop(c);
 
-    else if (strcmp(cmd, "pixel") == 0) {
-        cmd_pixel(cotton, cw, arg);
-    }
+        if (slot >= 0 && slot < c->var_count) {
+                push(c, atoi(c->vars[slot].value));
+            } 
 
-    else if (strcmp(cmd, "var") == 0) {
-        cmd_var(cotton, arg);
-    }
+        else {
+        	fprintf(stderr, "cot: tried to fetch from somewhere that don't exist,., :<\n");
+       	}
 
-    else if (strcmp(cmd, "clear") == 0) {
-        cmd_clear(cotton, cw);
-    }
+        }
 
-    else if (strcmp(cmd, "color") == 0) {
-        cmd_color(cotton, arg);
-    }
+        else if (strcmp(tok, ".") == 0) {
+            printf("%d", pop(c));
+            fflush(stdout);
+        }
 
-    else if (strcmp(cmd, "wait") == 0) {
-        cmd_wait(cotton, arg);
-    }
+        else if (strcmp(tok, "var") == 0) {
+            tok = strtok(NULL, " ");
+            if (tok) add_var(c, tok);
+        }
 
-    else if (strcmp(cmd, "input") == 0) {
-        cmd_input(cotton, arg);
-    }
+        else if (strcmp(tok, "pixel") == 0) {
+            int y = pop(c);
+            int x = pop(c);
+            draw_pixel_c(c, x, y);
+            cottonwindow_update(cw, c->video, sizeof(c->video[0]) * VIDEO_WIDTH);
+        }
 
-    else if (strcmp(cmd, "kill") == 0) {
-        cmd_kill();
-    }
+        else if (strcmp(tok, "color") == 0) {
+            int slot = pop(c);
+            if (slot >= 0 && slot < COTTOLETTE_SIZE)
+                c->c_cottolette = COTTOLETTE[slot];
+        }
 
-    else if (strcmp(cmd, "add") == 0) {
-        cmd_math(cotton, arg, '+');
-    }
+        else if (strcmp(tok, "clear") == 0) {
+            for (int i = 0; i < VIDEO_WIDTH * VIDEO_HEIGHT; i++) 
+                c->video[i] = 0;
+            c->cursor_x = 0;
+            c->cursor_y = 0;
+            cottonwindow_update(cw, c->video, sizeof(c->video[0]) * VIDEO_WIDTH);
+        }
 
-    else if (strcmp(cmd, "sub") == 0) {
-        cmd_math(cotton, arg, '-');
-    }
+		// the great wall of colors
+        else if (strcmp(tok, "blabla") == 0) push(c, 0);
+        else if (strcmp(tok, "whie") == 0) push(c, 1);
+        else if (strcmp(tok, "lav") == 0) push(c, 2);
+        else if (strcmp(tok, "wink") == 0) push(c, 3);
+        else if (strcmp(tok, "sink") == 0) push(c, 4);
+        else if (strcmp(tok, "wist") == 0) push(c, 5);
+        else if (strcmp(tok, "yebow") == 0) push(c, 6);
+        else if (strcmp(tok, "geen") == 0) push(c, 7);
 
-    else if (strcmp(cmd, "mult") == 0) {
-        cmd_math(cotton, arg, '*');
-    }
+        else if (strcmp(tok, "print") == 0) {
+            char *str = strtok(NULL, "");
+            
+            if (str) {
+                while (*str == ' ') str++;
+                
+                int nl = 0;
+                char *nl_at = strstr(str, " /n");
 
-    else if (strcmp(cmd, "div") == 0) {
-        cmd_math(cotton, arg, '/');
-    }
+            if (nl_at) {
+                    *nl_at = '\0';
+                    nl = 1;
+                }
+                
+                if (str[0] == '"') {
+                    str++;
+                    char *end = strrchr(str, '"');
+                    if (end) *end = '\0';
+                }
+                
+                printf("%s", str);
+                if (nl) printf("\n");
+                fflush(stdout);
+                
+                for (int i = 0; str[i]; i++) {
+                    if (str[i] == '\n') {
+                        c->cursor_x = 0;
+                        c->cursor_y += FONT_HEIGHT + 4;
+                        continue;
+                    }
 
-    else {
-        cmd_unknown(cmd);
+            		draw_char_c(c, str[i], c->cursor_x, c->cursor_y);
+                    c->cursor_x += FONT_WIDTH + 2;
+
+                    if (c->cursor_x + FONT_WIDTH >= VIDEO_WIDTH) {
+                        c->cursor_x = 0;
+                        c->cursor_y += FONT_HEIGHT + 4;
+                    }
+                }
+
+                if (nl) {
+                    c->cursor_x = 0;
+                    c->cursor_y += FONT_HEIGHT + 4;
+                }
+
+                cottonwindow_update(cw, c->video, sizeof(c->video[0]) * VIDEO_WIDTH);
+            }
+            break;
+        }
+        
+        else if (strcmp(tok, "wait") == 0) {
+            c->ticktock = SDL_GetTicks() + pop(c);
+        }
+
+        else if (strcmp(tok, "kill") == 0) {
+            exit(0);
+        }
+
+        else {
+            int slot = find_var(c, tok);
+            if (slot >= 0) {
+                push(c, slot);
+            }
+
+            else {
+                fprintf(stderr, "cot: cotton doesn't know what \"%s\" means, maybe type that out again? :<", tok);
+            }
+        }
+        
+        tok = strtok(NULL, " ");
     }
 }

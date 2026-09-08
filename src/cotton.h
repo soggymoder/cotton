@@ -46,7 +46,10 @@ typedef struct
                            // alot to type and im lazyyyyyyy bwaaaaaa
 
     CotVar vars[VARS];
-    int var_count;
+	int var_count;
+
+	int stack[32];
+	int stack_p;
 
 } Cotton;
 
