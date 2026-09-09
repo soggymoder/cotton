@@ -2,10 +2,11 @@
 #define INTERPRETER_H
 
 #include "cotton.h"
-#include "cottonwindow.h"
-#include <stdio.h>
 
-void cotton_interpret
-(Cotton *cotton, CottonWindow *cw, FILE *file);
+void cotton_compile
+(Cotton *c, char *line);
+
+void cotton_run
+(Cotton *c);
 
 #endif

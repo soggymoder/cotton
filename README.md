@@ -8,8 +8,6 @@ cotton originally started as a slightly modified CHIP8 emulator, then was repurp
 
 cotton is a passion hobby project being made solely by me, so, dont expect anything grandiose or of high quality - even then, suggestions and ideas are always welcome!! :D
 
-(*Inspired by Lua's internal engine's layout, not really the syntax itself)
-
 ## building cotton,
 
 ```
@@ -37,6 +35,7 @@ this is cotton's mascot!! his name is ton!! he was drawn by me using old cotton'
 
 honestly i dont have alot to write here for the time being, mostly because im afraid to set high expectations that i can't achieve, however:
 
-* Repurpose the current code into my new idea for the project and run something []
-* Update the current docs []
-* One day figure out how to optionally compile cot files into uxntal files (might be too ambitious but one can dream, right :<) []
+* Repurpose the current code into my new idea for the project and run something [X] (got a little base for tonight and it does work so wooo)
+* Organise the codebase a bit bc i can see the interpreter getting quite full like on old cotton [ ]
+* Update the current docs [ ]
+* One day figure out how to optionally compile cot files into uxntal files (might be too ambitious but one can dream, right :<) [ ]
