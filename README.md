@@ -21,7 +21,9 @@ cotton <file.cot>
 
 ### docs,
 
-current docs are a bit outdated, will work on them soon enough
+doccumentation for (cot)ton can be found inside of the `docs` folder of the repo!! make sure you have `mandoc` so you can read them.,., or just,.. idk.,., read them RAW.,., you do you xP
+
+as stated in the docs, since cotton still hasn't reached a stable release + knowing how i change my mind very easily, the language might be a bit unstable for it's first few releases and hence stuff might change quite a bit between releases, so, i'll try to keep the docs up-to-date with upmost priority so everything is properly doccumented :)
 
 ### "roadmap" for (cot)ton,
 
