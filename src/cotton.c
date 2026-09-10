@@ -5,6 +5,7 @@ void cotton_init
 (Cotton *c) 
 {
     c->stack_p = 0;
+    c->jmp_stack_p = 0;
     c->instruct_p = 0;
     c->mem_len = 0;
 
