@@ -1,52 +1,51 @@
-.Dd July 2026
+.Dd September 2026
 .Dt COT 5
-.Os cotton 0.2
+.Os cotton 0.1
 .Sh NAME
 .Nm cot
 .Nd the cot programming language
 
 .Sh DESCRIPTION
 
-cot is a small (both in size and features) interpreted programming language made
-to be simple, easily readable, approachable and to be used FOR cotton(1).
+cot is a small (both in size and features) general-purpose stack concatenative 
+programming language 
 
-cot's development is being made side by side with cotton's development, as such,
-both are built with eachother in mind.
+cot's development is being made side by side with cotton's development, as such, one keeps
+the other in mind
 
-cotton's keywords are called "commands" , below is a reference list of every command
-in cot (as of cotton 0.2) and how to use it properly.
+cotton has two types of keywords: builtins and immediates
 
-.Sh COMMANDS
-.Bl -tag -width "pixel Ar (x) (y) (color)"
-.It Ic print Ar (text)
-Prints text to the screen.
-.It Ic wait Ar (seconds)
-Waits for an x ammount of seconds.
-.It Ic kill
-Kills the ongoing cotton process.
-.It Ic color Ar (color)
-Colors text (there are 7 options, which can be seen in cotton.h!! i'd list them here but blehhh).
-.It Ic var Ar (name) (value)
-Assigns a value to a variable.
-.It Ic add Ar (var) (value)
-Adds a value to a variable.
-.It Ic sub Ar (var) (value)
-Subtracts a value from a variable.
-.It Ic mult Ar (var) (value)
-Multiplies a variable by a value.
-.It Ic div Ar (var) (value)
-Divides a variable by a value.
-.It Ic pixel Ar (x) (y) (color)
-Draws a pixel at the specified coordinates (this will be probably be a bit adjusted in the future).
-.It Ic clear
-Clears whatever is currently on the screen.
-.It Ic input Ar (var)
-Waits for user input and stores it in a variable.
+.Bl -tag -width "Immediates"
+.It Builtins
+Words that are executed at runtime that directly manipulate the data stack or the memory (such as +, -, dup, swap, ->, @, etc.).
+.It Immediates
+Words processed at compile time to handle control flow and the program's structure (such as if, else, end, etc.).
+.El
+
+.Sh WORDS
+.Bl -tag -width "-> (slot)"
+.It Ic + , - , * , /
+Pops two values, performs arithmetic, and pushes the result.
+.It Ic dup
+Duplicates the top value on the stack.
+.It Ic swap
+Swaps the top two values on the stack.
+.It Ic drop
+Discards/drops the top value on the stack.
+.It Ic ->
+Pops a value and a slot index, then stores the value in that same variable slot.
+.It Ic @
+Pops a slot index and pushes the stored value back onto the stack.
+.It Ic ? if
+Pops a value, if it's not zero, then it executes the block after it.
+.It Ic else
+Executes if the prior if evaluated to zero.
+.It Ic end
+Closes an if or else block.
 .El
 
 NOTE: some of the commands above are subject to change given that cot(ton) has yet to reach it's first stable release - even then, any update to any command will be doccumented here and i will also do my best to not break the whole syntax every update ;w;
 
 .Sh SEE ALSO
-.Xr cotton 1 ,
-.Xr eiki 5
+.Xr cotton 1
 
