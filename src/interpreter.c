@@ -11,7 +11,7 @@ ooooo get off your ass dani ooooo go work ooooo dani you're a bum oooooo oooooo 
 static void word_add
 (Cotton *c)
 {
-    int b = pop(c);
+	int b = pop(c);
     int a = pop(c);
 
     push(c, a + b);
@@ -43,6 +43,7 @@ static void word_div
 
     // Now, i doubt anyone will really be dividing stuff by zero but you never know.., talk about le safety amirite.., heh 
     if (b == 0) {
+
         fprintf(stderr, "cotton: you cant divide by zero, you dummy :P\n");
         return;
     }
@@ -50,10 +51,25 @@ static void word_div
     push(c, a / b);
 }
 
-static void word_dot
+static void word_dotnum
 (Cotton *c)
 {
-    printf("%d\n", pop(c));
+	printf("%d\n", pop(c));
+}
+
+static void word_dotstr
+(Cotton *c)
+{ 
+    int ptr = pop(c);
+
+    while (c->mem[ptr] != '\0') {
+
+        printf("%c", c->mem[ptr]);
+
+        ptr++;
+    }
+
+	printf("\n");
 }
 
 // while forth does use ! and @, im quirky and #notlikeothergirls so im changing ! to -> bc i think it makes more sense :P
@@ -64,10 +80,12 @@ static void word_store
     int num = pop(c);
 
     if (slot >= 0 && slot < VARS_SIZE) {
+
         c->vars[slot] = num;
     } 
 
     else {
+
         fprintf(stderr, "cotton: i tried to store somewhere that don't exist,, its in the void now.., :(\n");
     }
 }
@@ -78,10 +96,12 @@ static void word_fetch
     int slot = pop(c);
 
     if (slot >= 0 && slot < VARS_SIZE) {
-        push(c, c->vars[slot]);
+
+ 		push(c, c->vars[slot]);
     } 
 
     else {
+
         fprintf(stderr, "cotton: i tried to fetch from somewhere that seemingly don't exist,, erm.,.\n");
     }
 }
@@ -143,7 +163,8 @@ static Word builtins[] = {
     {"-", word_sub},
     {"*", word_mul},
     {"/", word_div},
-    {".", word_dot},
+    {".n", word_dotnum},
+	{".s", word_dotstr}, 
     {"->", word_store},
     {"@", word_fetch},
     {"dup", word_dup},
@@ -162,6 +183,7 @@ static void word_if
 (Cotton *c)
 {
     if (c->jmp_stack_p >= JMP_STACK_SIZE) {
+
         fprintf(stderr, "cotton: there are too many nested ifs, calm down!! D:\n");
         return;
     }
@@ -175,6 +197,7 @@ static void word_else
 (Cotton *c)
 {
     if (c->jmp_stack_p <= 0) {
+
         fprintf(stderr, "cotton: i found an else without an if,., where'd that come from??\n");
         return;
     }
@@ -192,6 +215,7 @@ static void word_end
 (Cotton *c)
 {
     if (c->jmp_stack_p <= 0) {
+
         fprintf(stderr, "cotton: i found an end without an if,., where'd that come from??\n");
         return;
     }
@@ -210,80 +234,147 @@ static Word immediates[] = {
 /* Another comment just so i can separate the immediates from the compiler and runtime functions blehhhhhh
 words words words words more words SO many words OH MY GOD THERE ARE SO MANY WORDS WORDS WORDS WORDS AAAAAA*/
 
+// i feel like the compiler's a bit messy atm but i suppose this is yet another thing i shall revise when i eventually split the interpreter :P
 void cotton_compile
 (Cotton *c, char *line)
 {
     line[strcspn(line, "\r\n")] = 0;
     if (line[0] == '\0' || (line[0] == '/' && line[1] == '/')) return;
 
-    char *tok = strtok(line, " ");
+// this part of the compiling process is just for cotton to find strings 
 
-    while (tok) {
-        
+    int i = 0;
+
+    while (line[i] != '\0') {
+
         if (c->mem_len >= MEM_SIZE - 2) {
-            fprintf(stderr, "cotton: i ran out of memory,., can't compile anymore :<\n");
+
+        	fprintf(stderr, "cotton: i have ran out of memory,., can't compile anymore :<\n");
             return;
         }
 
-        /* This is subjective to change but i thought that using ? for conditionals so stuff reads out as
-        "is this happening? if so, then, blah blah blah" was a good idea, atleast sounded good in my head :P*/
+        if (line[i] == ' ') {
 
-        if (strcmp(tok, "?") == 0) {
-        // oh yeah, also, this doesn't really do anything, its just here to make if statements look nicer x3 
+            i++;
         }
 
-        else {            
+        else if (line[i] == '"') {
+            
+            int string_start = i + 1;
 
-            int found_immediate = 0;
+            for (i = string_start; line[i] != '\0'; i++) {
 
-            for (int i = 0; immediates[i].name != NULL; i++) {
-                
-                if (strcmp(tok, immediates[i].name) == 0) {
-                    immediates[i].code(c);
-                    found_immediate = 1;
+                if (line[i] == '"') {
+
+                    line[i] = '\0';
+
                     break;
                 }
+
+                else if (line[i] == '\0') {
+
+                    fprintf(stderr, "cotton: you forgot to close a string.,. i cant compile the file until you fix it :P");
+                    return;
+                }
+
             }
 
-            if (!found_immediate) {
-                
-                int is_num = 1;
-                
-                for (int i = 0; tok[i]; i++) {
-                    
-                    if (!isdigit(tok[i]) && !(i == 0 && tok[i] == '-')) {
-                        is_num = 0;
+            c->mem[c->mem_len++] = OP_PUSH_STR;
+
+            for (int j = string_start; line[j] != '\0'; j++) {
+
+                c->mem[c->mem_len++] = line[j];
+            }
+
+			c->mem[c->mem_len++] = '\0';
+                        
+            i++;
+        }
+
+
+// now it resumes to it's usual "reading words character by character" behaviour :P
+
+        else {
+            
+            int tok_start = i;
+            
+            while (line[i] != ' ' && line[i] != '\0') {
+
+                i++;
+            }
+            
+            // Here i just terminate the token temporarily
+            char temp = line[i];
+            line[i] = '\0';
+            
+            char *tok = line + tok_start;
+
+            /* This is subjective to change but i thought that using ? for conditionals so stuff reads out as
+            "is this happening? if so, then, blah blah blah" was a good idea, atleast sounded good in my head :P*/
+
+            if (strcmp(tok, "?") == 0) {
+            // oh yeah, also, this doesn't really do anything, its just here to make if statements look nicer x3 
+            }
+
+            else {            
+
+                int found_immediate = 0;
+
+                for (int j = 0; immediates[j].name != NULL; j++) {
+
+                    if (strcmp(tok, immediates[j].name) == 0) {
+
+                        immediates[j].code(c);
+                        found_immediate = 1;
                         break;
                     }
                 }
 
-                if (is_num) {
-                    c->mem[c->mem_len++] = OP_PUSH;
-                    c->mem[c->mem_len++] = atoi(tok);
-                } 
-
-                else {
+                if (!found_immediate) {
                     
-                    int found = 0;
-
-                    for (int i = 0; builtins[i].name != NULL; i++) {
+                    int is_num = 1;
+                    
+                    for (int j = 0; tok[j]; j++) {
                         
-                        if (strcmp(tok, builtins[i].name) == 0) {
-                            c->mem[c->mem_len++] = OP_CALL;
-                            c->mem[c->mem_len++] = i;
-                            found = 1;
+                        if (!isdigit(tok[j]) && !(j == 0 && tok[j] == '-')) {
+
+                            is_num = 0;
                             break;
                         }
                     }
 
-                    if (!found) {
-                        fprintf(stderr, "cotton: sorry, i don't know what \"%s\" means :(\n", tok);
+                    if (is_num) {
+
+                        c->mem[c->mem_len++] = OP_PUSH;
+                        c->mem[c->mem_len++] = atoi(tok);
+                    } 
+
+                    else {
+                        
+                        int found = 0;
+
+                        for (int j = 0; builtins[j].name != NULL; j++) {
+                            
+                            if (strcmp(tok, builtins[j].name) == 0) {
+
+                                c->mem[c->mem_len++] = OP_CALL;
+                                c->mem[c->mem_len++] = j;
+                                found = 1;
+                                break;
+                            }
+                        }
+
+                        if (!found) {
+
+                            fprintf(stderr, "cotton: sorry, i don't know what \"%s\" means :(\n", tok);
+                        }
                     }
                 }
             }
-        }
 
-        tok = strtok(NULL, " ");
+			// now i just add this back so that the outer loop doesn't get kirkified broken heart emoji 
+            line[i] = temp;
+        }
     }
 }
 
@@ -295,32 +386,54 @@ void cotton_run
     while (c->instruct_p < c->mem_len) {
         
         int op = c->mem[c->instruct_p++];
-        
-        if (op == OP_PUSH) {
-            push(c, c->mem[c->instruct_p++]);
-        }
 
-        else if (op == OP_CALL) { 
+        switch (op) {
 
-            int idx = c->mem[c->instruct_p++];
-            builtins[idx].code(c);
-        }
+            case OP_PUSH:
+                push(c, c->mem[c->instruct_p++]);
 
-        else if (op == OP_JMP) {
-            c->instruct_p = c->mem[c->instruct_p];
-        }
+                break;
 
-        else if (op == OP_FJMP) {
+            case OP_CALL: {
+                int id = c->mem[c->instruct_p++];
+                builtins[id].code(c);
 
-            int target = c->mem[c->instruct_p++];
-
-            if (pop(c) == 0) {
-                c->instruct_p = target;
+                break;
             }
-        }
 
-        else if (op == OP_KILL) {
-            break;
+            case OP_JMP: {
+                c->instruct_p = c->mem[c->instruct_p];
+
+                break;
+            }
+
+            case OP_FJMP: {
+
+                int target = c->mem[c->instruct_p++];
+
+                if (pop(c) == 0) {
+                    c->instruct_p = target;
+                }
+
+                break;
+            }
+
+            case OP_PUSH_STR:
+
+             	push(c, c->instruct_p);
+
+                while (c->mem[c->instruct_p] != '\0') {
+                    c->instruct_p++;
+                }
+                
+                c->instruct_p++;
+
+                break;
+
+            case OP_KILL:
+                
+                return;
+
         }
     }
 }

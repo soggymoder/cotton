@@ -6,6 +6,7 @@
 #define OP_KILL        2
 #define OP_JMP         3
 #define OP_FJMP        4
+#define OP_PUSH_STR	   5
 
 #define STACK_SIZE     64
 #define JMP_STACK_SIZE 32

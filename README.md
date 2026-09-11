@@ -29,7 +29,7 @@ as stated in the docs, since cotton still hasn't reached a stable release + know
 
 honestly i dont have a whole lot to put here for the time being as im afraid to set up goals too high for myself and end up not being able to achieve them, but, for now:
 
-* Figure out what i wanna do with the syntax (kinda experimental atm [ ]
+* Figure out what i wanna do with the syntax (kinda experimental atm) [ ]
 * Add more features to cot as it is somewhat barebones as of now [ ]
 * Split(?) `interpreter.c` so as to keep everything tidy and organised [ ]
 * HOPEFULLY and EVENTUALLY one day, some time soon(TM) figure out how to compile cot to uxntal [ ]
