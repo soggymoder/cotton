@@ -336,7 +336,7 @@ void cotton_compile
                     
                     for (int j = 0; tok[j]; j++) {
                         
-                        if (!isdigit(tok[j]) && !(j == 0 && tok[j] == '-')) {
+                        if (!isdigit(tok[j]) && !(j == 0 && tok[j] == '-' && tok[1] != '\0')) {
 
                             is_num = 0;
                             break;

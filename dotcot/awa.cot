@@ -1,0 +1,17 @@
+"Hallo from Cot this is a little test program to show off the syntax :D" 0 ->
+
+34 2 * 1 -
+
+dup
+
+30 > ? if
+
+.n
+
+0 @ .s
+
+else
+
+drop
+
+end
