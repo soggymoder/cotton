@@ -36,6 +36,12 @@ honestly i dont have a whole lot to put here for the time being as im afraid to 
 
 ## misc but still related to the project:
 
+### cot's logo,
+
+![cot](imgs/cot.png)
+
+this is cot's logo !! its a cogwheel with a cotton flower in the middle !! very cool !! :3
+
 ### cotton's mascot,
 
 ![ton](imgs/ton.png)
