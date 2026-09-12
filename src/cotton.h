@@ -8,10 +8,10 @@
 #define OP_FJMP        4
 #define OP_PUSH_STR	   5
 
-#define STACK_SIZE     64
-#define JMP_STACK_SIZE 32
-#define MEM_SIZE       1024
-#define VARS_SIZE      64
+#define STACK_SIZE     256
+#define JMP_STACK_SIZE 64
+#define MEM_SIZE       4096
+#define VARS_SIZE      256
 
 typedef struct Cotton Cotton;
 

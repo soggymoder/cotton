@@ -224,10 +224,27 @@ static void word_end
     c->mem[target] = c->mem_len;
 }
 
+static void word_loop
+(Cotton *c)
+{
+	c->jmp_stack[c->jmp_stack_p++] = c->mem_len;
+}
+
+static void word_until
+(Cotton *c)
+{
+	int loop_back = c->jmp_stack[--c->jmp_stack_p];
+
+	c->mem[c->mem_len++] = OP_FJMP;
+	c->mem[c->mem_len++] = loop_back;
+}
+
 static Word immediates[] = {
     {"if", word_if},
     {"else", word_else},
     {"end", word_end},
+    {"loop", word_loop},
+    {"until", word_until},
     {NULL, NULL}
 };
 
