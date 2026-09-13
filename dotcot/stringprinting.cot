@@ -1,1 +1,5 @@
-"hallo from neu cot" .s
+"hallo from neu cot" .s nl
+
+"hallo again from neu cot" .s nl 
+
+-- rn you can't have a string that doesnt use nl be followed by a string without nl or else they both appear on the same line.,., smth i ought to look into some time soon :P

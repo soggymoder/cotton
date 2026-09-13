@@ -31,7 +31,7 @@ honestly i dont have a whole lot to put here for the time being as im afraid to 
 
 * Figure out what i wanna do with the syntax (kinda experimental atm) [ ]
 * Add more features to cot as it is somewhat barebones as of now [ ]
-* Split(?) `interpreter.c` so as to keep everything tidy and organised [ ]
+* Split(?) `interpreter.c` so as to keep everything tidy and organised [X]
 * HOPEFULLY and EVENTUALLY one day, some time soon(TM) figure out how to compile cot to uxntal [ ]
 
 ## misc but still related to the project:

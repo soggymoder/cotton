@@ -15,7 +15,7 @@ the other in mind
 
 in cot, "words" are refered to as cogs - as such, there are two types of cogs:
 
-.B1 -tag -width "Cogs" 
+.Bl -tag -width "Cogs" 
 .It Cogs
 Hardcoded words into cot, so, words that already come with base cot
 .It UCogs 
@@ -32,14 +32,18 @@ Words processed at compile time to handle control flow and the program's structu
 
 .Sh COGS
 .Bl -tag -width "-> (slot)"
-.It Ic + , - , * , /
+.It Ic + , - , * , /, %
 Pops two values, performs arithmetic, and pushes the result
+.It Ic --
+Comments out a line, currently there isn't any multiline support,, sowe,,
 .It Ic dup
 Duplicates the top value on the stack
 .It Ic swap
 Swaps the top two values on the stack
 .It Ic drop
 Discards/drops the top value on the stack
+.It Ic rot
+Pops three values, rotates them around, so, the top-most value goes to the bottom and the latter two go up
 .It Ic ->
 Pops a value and a slot index, then stores the value in that same variable slot
 .It Ic @
@@ -47,7 +51,9 @@ Pops a slot index and pushes the stored value back onto the stack
 .It Ic .n
 Prints a number
 .It Ic .s
-Prints a string
+Prints a string 
+.It Ic nl
+Meant to be used alongside .s, makes strings print in a new line 
 .It Ic ? if
 Pops a value, if it's not zero, then it executes the block after it
 .It Ic else

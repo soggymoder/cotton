@@ -15,7 +15,7 @@ void cotton_compile
 (Cotton *c, char *line)
 {
     line[strcspn(line, "\r\n")] = 0;
-    if (line[0] == '\0' || (line[0] == '/' && line[1] == '/')) return;
+    if (line[0] == '\0' || (line[0] == '-' && line[1] == '-')) return; // i like lua's comments, i think they'd fit cot better than C's
 
 	// this part of the compiling process is just for cotton to find strings 
 

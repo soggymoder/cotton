@@ -45,6 +45,15 @@ void cog_div
     push(c, a / b);
 }
 
+void cog_mod
+(Cotton *c)
+{
+	int b = pop(c);
+	int a = pop(c);
+
+	push(c, a % b);
+}
+
 void cog_dotnum
 (Cotton *c)
 {
@@ -62,7 +71,12 @@ void cog_dotstr
 
         ptr++;
     }
+}
 
+// im aware c goes unused here and hence this gives a warning, yes im lazy, might do smth about it another time
+void cog_newline
+(Cotton *c) 
+{
 	printf("\n");
 }
 
@@ -125,6 +139,18 @@ void cog_swap
     push(c, a);
 }
 
+void cog_rotate
+(Cotton *c)
+{
+	int a = pop(c);
+	int b = pop(c);
+	int c_ = pop(c);
+
+	push(c, b);
+	push(c, c_);
+	push(c, a);
+}
+
 void cog_equal
 (Cotton *c)
 {
@@ -157,13 +183,16 @@ Cog builtins[] = {
     {"-", cog_sub},
     {"*", cog_mul},
     {"/", cog_div},
-    {".n", cog_dotnum},
-	{".s", cog_dotstr}, 
+	{"%", cog_mod},
+	{".n", cog_dotnum},
+	{".s", cog_dotstr},
+	{"nl", cog_newline},
     {"->", cog_store},
     {"@", cog_fetch},
     {"dup", cog_dup},
     {"drop", cog_drop},
     {"swap", cog_swap},
+    {"rot", cog_rotate},
     {"=", cog_equal},
     {"<", cog_lssr},
     {">", cog_grtr},
