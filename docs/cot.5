@@ -13,7 +13,15 @@ programming language
 cot's development is being made side by side with cotton's development, as such, one keeps
 the other in mind
 
-cot has two types of keywords: builtins and immediates
+in cot, "words" are refered to as cogs - as such, there are two types of cogs:
+
+.B1 -tag -width "Cogs" 
+.It Cogs
+Hardcoded words into cot, so, words that already come with base cot
+.It UCogs 
+Words that are defined by the user, so, words that do not come with cot by default and that the user must make themselves (as of cot 0.1 this isn't possible YET, however, it is smth i want to implement in the near future)
+
+cot also has two types of keywords (or, keycogs): builtins and immediates
 
 .Bl -tag -width "Immediates"
 .It Builtins
@@ -22,7 +30,7 @@ Words that are executed at runtime that directly manipulate the data stack or th
 Words processed at compile time to handle control flow and the program's structure (such as if, else, end, etc.)
 .El
 
-.Sh WORDS
+.Sh COGS
 .Bl -tag -width "-> (slot)"
 .It Ic + , - , * , /
 Pops two values, performs arithmetic, and pushes the result
@@ -52,7 +60,7 @@ Starts a loop
 Jumps back to it's correspondent loop statement while the condition is false, then it falls through once the condition is true
 .El
 
-NOTE: some of the commands above are subject to change given that cot(ton) has yet to reach it's first stable release - even then, any update to any command will be doccumented here and i will also do my best to not break the whole syntax every update ;w;
+NOTE: some of the cogs above are subject to change given that cot(ton) has yet to reach it's first stable release - even then, any update to any command will be doccumented here and i will also do my best to not break the whole syntax every update ;w;
 
 .Sh SEE ALSO
 .Xr cotton 1

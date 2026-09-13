@@ -13,9 +13,27 @@
 
 cotton is a small stack machine for the cot(5) programming language (inspired by Lua, Forth and Uxntal) written in C99
 
+cotton's internals consist of 7 files (as of cotton 0.1) which are:
+
+.Ss src/
+.Bl -tag -width "main.c"
+.It main.c
+This file reads each .cot file line by line and then hands each read line to the loom, then, it returns the results
+.It Ic cotton.c
+This file handles the core operations of cotton: initializing state, and, pushing and popping the stack
+.It Ic cotton.h 
+This file has the Cotton struct, contains the cog types, opcode definitions and the specs for Cotton
+.It Ic weave.c
+This file has the cogs, so, the builtin and runtime keycogs
+.It Ic weave.h 
+This file declares the keycogs so they can be used elsewhere inside of Cotton
+.It Ic loom.c
+This file is for the compiler and the runtime for Cotton
+.It Ic loom.h
+This file is where cotton_compile and cotton_run are declared to be used in loom.c
+.El
+
 as of now it only compiles cot programs, but, i do intend to add the option to compile cot programs to uxntal in the future :P
 
 .Sh SEE ALSO
 .Xr cot 5
-
-

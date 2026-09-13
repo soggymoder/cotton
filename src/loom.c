@@ -1,264 +1,23 @@
 /* I eventually need to split this file before it gets too big, i'll keep this comment here as a mental reminder,.,
 ooooo get off your ass dani ooooo go work ooooo dani you're a bum oooooo oooooo you suckkk oooooooo,., sorry me.., */
 
+// FUTURE DANI HERE !!! I DID IT !!! I GOT OFF MY LAZY ASS !!! RAGHHHHHHHHHHHHHH
+
 #include "cotton.h"
-#include "interpreter.h"
+#include "loom.h"
+#include "weave.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
 
-static void word_add
-(Cotton *c)
-{
-	int b = pop(c);
-    int a = pop(c);
-
-    push(c, a + b);
-}
-
-static void word_sub
-(Cotton *c)
-{
-    int b = pop(c);
-    int a = pop(c);
-
-    push(c, a - b);
-}
-
-static void word_mul
-(Cotton *c)
-{
-    int b = pop(c);
-    int a = pop(c);
-
-    push(c, a * b);
-}
-
-static void word_div
-(Cotton *c)
-{
-    int b = pop(c);
-    int a = pop(c);
-
-    // Now, i doubt anyone will really be dividing stuff by zero but you never know.., talk about le safety amirite.., heh 
-    if (b == 0) {
-
-        fprintf(stderr, "cotton: you cant divide by zero, you dummy :P\n");
-        return;
-    }
-
-    push(c, a / b);
-}
-
-static void word_dotnum
-(Cotton *c)
-{
-	printf("%d\n", pop(c));
-}
-
-static void word_dotstr
-(Cotton *c)
-{ 
-    int ptr = pop(c);
-
-    while (c->mem[ptr] != '\0') {
-
-        printf("%c", c->mem[ptr]);
-
-        ptr++;
-    }
-
-	printf("\n");
-}
-
-// while forth does use ! and @, im quirky and #notlikeothergirls so im changing ! to -> bc i think it makes more sense :P
-static void word_store
-(Cotton *c)
-{
-    int slot = pop(c);
-    int num = pop(c);
-
-    if (slot >= 0 && slot < VARS_SIZE) {
-
-        c->vars[slot] = num;
-    } 
-
-    else {
-
-        fprintf(stderr, "cotton: i tried to store somewhere that don't exist,, its in the void now.., :(\n");
-    }
-}
-
-static void word_fetch
-(Cotton *c)
-{
-    int slot = pop(c);
-
-    if (slot >= 0 && slot < VARS_SIZE) {
-
- 		push(c, c->vars[slot]);
-    } 
-
-    else {
-
-        fprintf(stderr, "cotton: i tried to fetch from somewhere that seemingly don't exist,, erm.,.\n");
-    }
-}
-
-static void word_dup
-(Cotton *c)
-{
-    int a = pop(c);
-
-    push(c, a);
-    push(c, a);
-}
-
-static void word_drop
-(Cotton *c)
-{
-    pop(c);
-}
-
-static void word_swap
-(Cotton *c)
-{
-    int b = pop(c);
-    int a = pop(c);
-
-    push(c, b);
-    push(c, a);
-}
-
-static void word_equal
-(Cotton *c)
-{
-    int b = pop(c);
-    int a = pop(c);
-
-    push(c, a == b ? 1 : 0);
-}
-
-static void word_lssr
-(Cotton *c)
-{
-    int b = pop(c);
-    int a = pop(c);
-
-    push(c, a < b ? 1 : 0);
-}
-
-static void word_grtr
-(Cotton *c)
-{
-    int b = pop(c);
-    int a = pop(c);
-
-    push(c, a > b ? 1 : 0);
-}
-
-static Word builtins[] = {
-    {"+", word_add},
-    {"-", word_sub},
-    {"*", word_mul},
-    {"/", word_div},
-    {".n", word_dotnum},
-	{".s", word_dotstr}, 
-    {"->", word_store},
-    {"@", word_fetch},
-    {"dup", word_dup},
-    {"drop", word_drop},
-    {"swap", word_swap},
-    {"=", word_equal},
-    {"<", word_lssr},
-    {">", word_grtr},
-    {NULL, NULL}
-};
-
-/* this comment serves as a separator to split the words above from the words below, the words below run straight away while compiling
-instead of waiting to be ran later, forth calls these "immediate words" so thats what im calling them too :P (if it aint broke dont fix it as they say) */
-
-static void word_if
-(Cotton *c)
-{
-    if (c->jmp_stack_p >= JMP_STACK_SIZE) {
-
-        fprintf(stderr, "cotton: there are too many nested ifs, calm down!! D:\n");
-        return;
-    }
-
-    c->mem[c->mem_len++] = OP_FJMP;
-    c->jmp_stack[c->jmp_stack_p++] = c->mem_len;
-    c->mem[c->mem_len++] = 0;
-}
-
-static void word_else
-(Cotton *c)
-{
-    if (c->jmp_stack_p <= 0) {
-
-        fprintf(stderr, "cotton: i found an else without an if,., where'd that come from??\n");
-        return;
-    }
-
-    int if_target = c->jmp_stack[--c->jmp_stack_p];
-
-    c->mem[c->mem_len++] = OP_JMP;
-    c->jmp_stack[c->jmp_stack_p++] = c->mem_len;
-    c->mem[c->mem_len++] = 0;
-
-    c->mem[if_target] = c->mem_len;
-}
-
-static void word_end
-(Cotton *c)
-{
-    if (c->jmp_stack_p <= 0) {
-
-        fprintf(stderr, "cotton: i found an end without an if,., where'd that come from??\n");
-        return;
-    }
-
-    int target = c->jmp_stack[--c->jmp_stack_p];
-    c->mem[target] = c->mem_len;
-}
-
-static void word_loop
-(Cotton *c)
-{
-	c->jmp_stack[c->jmp_stack_p++] = c->mem_len;
-}
-
-static void word_until
-(Cotton *c)
-{
-	int loop_back = c->jmp_stack[--c->jmp_stack_p];
-
-	c->mem[c->mem_len++] = OP_FJMP;
-	c->mem[c->mem_len++] = loop_back;
-}
-
-static Word immediates[] = {
-    {"if", word_if},
-    {"else", word_else},
-    {"end", word_end},
-    {"loop", word_loop},
-    {"until", word_until},
-    {NULL, NULL}
-};
-
-/* Another comment just so i can separate the immediates from the compiler and runtime functions blehhhhhh
-words words words words more words SO many words OH MY GOD THERE ARE SO MANY WORDS WORDS WORDS WORDS AAAAAA*/
-
-// i feel like the compiler's a bit messy atm but i suppose this is yet another thing i shall revise when i eventually split the interpreter :P
 void cotton_compile
 (Cotton *c, char *line)
 {
     line[strcspn(line, "\r\n")] = 0;
     if (line[0] == '\0' || (line[0] == '/' && line[1] == '/')) return;
 
-// this part of the compiling process is just for cotton to find strings 
+	// this part of the compiling process is just for cotton to find strings 
 
     int i = 0;
 
@@ -309,7 +68,7 @@ void cotton_compile
         }
 
 
-// now it resumes to it's usual "reading words character by character" behaviour :P
+		// now it resumes to it's usual "reading words character by character" behaviour :P
 
         else {
             
@@ -321,7 +80,7 @@ void cotton_compile
             }
             
             // Here i just terminate the token temporarily
-            char temp = line[i];
+			char temp = line[i];
             line[i] = '\0';
             
             char *tok = line + tok_start;

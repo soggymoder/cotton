@@ -18,7 +18,7 @@ typedef struct Cotton Cotton;
 typedef struct {
     char *name;
     void (*code)(Cotton *c);
-} Word;
+} Cog;
 
 struct Cotton {
     int stack[STACK_SIZE];

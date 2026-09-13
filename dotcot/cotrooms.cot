@@ -1,0 +1,19 @@
+// those who loop through the cotrooms hashtag awesome reference
+
+"kurukuru kurukuru" .s
+
+0 0 ->
+loop
+"kurikaesu" .s
+0 @ 1 + 0 ->
+0 @ 4 =
+until
+
+"furafura furafura" .s
+
+0 0 ->
+loop
+"furakutaru" .s
+0 @ 1 + 0 ->
+0 @ 4 =
+until
