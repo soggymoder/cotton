@@ -17,25 +17,25 @@ in cot, "words" are refered to as cogs - as such, there are two types of cogs:
 
 .Bl -tag -width "Cogs" 
 .It Cogs
-Hardcoded words into cot, so, words that already come with base cot
+Hardcoded words into cot - that is, words that already come with base cot
 .It UCogs 
-Words that are defined by the user, so, words that do not come with cot by default and that the user must make themselves (as of cot 0.1 this isn't possible YET, however, it is smth i want to implement in the near future)
+Words that are defined by the user - that is, words that do not come with cot by default and that the user must make/define themselves (as of cot 0.1 this isn't possible YET, however, it is smth i want to implement in the near future)
 
-cot also has two types of keywords (or, keycogs): builtins and immediates
+cot also has two types of "keycogs" (keywords): builtins and immediates
 
 .Bl -tag -width "Immediates"
 .It Builtins
-Words that are executed at runtime that directly manipulate the data stack or the memory (such as +, -, dup, swap, ->, @, etc.)
+Cogs that are executed at runtime and that directly manipulate the data stack or the memory (like +, -, dup, swap, ->, @, etc.)
 .It Immediates
-Words processed at compile time to handle control flow and the program's structure (such as if, else, end, etc.)
+Cogs that are processed at compile time to handle the control flow and the program's structure (like if, else, end, etc.)
 .El
 
 .Sh COGS
 .Bl -tag -width "-> (slot)"
 .It Ic + , - , * , /, %
-Pops two values, performs arithmetic, and pushes the result
+Pops two values, does arithmetic, and pushes the result
 .It Ic --
-Comments out a line, currently there isn't any multiline support,, sowe,,
+Comments out a line, currently there isn't any multiline support,, sowwe,, >.<
 .It Ic dup
 Duplicates the top value on the stack
 .It Ic swap
@@ -53,17 +53,17 @@ Prints a number
 .It Ic .s
 Prints a string 
 .It Ic nl
-Meant to be used alongside .s, makes strings print in a new line 
+Meant to be used alongside .n and .s, makes numbers and strings print in a new line 
 .It Ic ? if
 Pops a value, if it's not zero, then it executes the block after it
 .It Ic else
-Executes if the prior if evaluated to zero
+Runs if the prior if statement evaluated to zero
 .It Ic end
-Closes an if or else block
+Closes an if / else block
 .It Ic loop
 Starts a loop
 .It Ic until
-Jumps back to it's correspondent loop statement while the condition is false, then it falls through once the condition is true
+Jumps back to the loop statement that called it so long as the condition is false, then, it falls through once the condition is true
 .El
 
 NOTE: some of the cogs above are subject to change given that cot(ton) has yet to reach it's first stable release - even then, any update to any command will be doccumented here and i will also do my best to not break the whole syntax every update ;w;

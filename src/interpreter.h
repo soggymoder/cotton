@@ -1,5 +1,5 @@
-#ifndef LOOM_H
-#define LOOM_H
+#ifndef INTERPRETER_H
+#define INTERPRETER_H
 
 #include "cotton.h"
 

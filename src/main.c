@@ -1,5 +1,5 @@
 #include "cotton.h"
-#include "loom.h"
+#include "interpreter.h"
 #include <stdio.h>
 
 int main

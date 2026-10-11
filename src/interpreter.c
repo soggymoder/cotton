@@ -4,8 +4,8 @@ ooooo get off your ass dani ooooo go work ooooo dani you're a bum oooooo oooooo 
 // FUTURE DANI HERE !!! I DID IT !!! I GOT OFF MY LAZY ASS !!! RAGHHHHHHHHHHHHHH
 
 #include "cotton.h"
-#include "loom.h"
-#include "weave.h"
+#include "interpreter.h"
+#include "cogs.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

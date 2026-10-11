@@ -1,4 +1,4 @@
-#include "weave.h"
+#include "interpreter.h"
 #include "cotton.h"
 #include <stdio.h>
 

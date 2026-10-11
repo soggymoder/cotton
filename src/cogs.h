@@ -1,5 +1,5 @@
-#ifndef WEAVE_H
-#define WEAVE_H
+#ifndef COGS_H
+#define COGS_H
 
 #include "cotton.h"
 

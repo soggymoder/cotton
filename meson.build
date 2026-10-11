@@ -5,8 +5,8 @@ project('cotton', 'c',
 src_files = [
   'src/main.c',
   'src/cotton.c',
-  'src/loom.c',
-  'src/weave.c',
+  'src/interpreter.c',
+  'src/cogs.c',
 ]
 
 executable('cotton', src_files)
