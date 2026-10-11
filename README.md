@@ -6,43 +6,32 @@ cotton is a small stack machine for the cot programming language (a concatenativ
 
 cotton is a passion hobby project being made solely by me, so, dont expect anything grandiose or of high quality - even then, suggestions and ideas are always welcome!! :D
 
-## building cotton,
+## building cotton
 
 ```
 meson setup build
 ninja -C build
 ```
 
-## running cotton,
+## running cotton
 
 ```
 cotton <file.cot>
 ```
 
-### docs,
+### docs
 
 doccumentation for (cot)ton can be found inside of the `docs` folder of the repo!! make sure you have `mandoc` so you can read them.,., or just,.. idk.,., read them RAW.,., you do you xP
 
-as stated in the docs, since cotton still hasn't reached a stable release + knowing how i change my mind very easily, the language might be a bit unstable for it's first few releases and hence stuff might change quite a bit between releases, so, i'll try to keep the docs up-to-date with upmost priority so everything is properly doccumented :)
+as stated in the docs, since cotton still hasn't reached a stable release + knowing how i change my mind very easily, the language might be a bit unstable for the time being and hence stuff might change quite a bit between releases, so, i'll try to keep the docs up-to-date with upmost priority so everything is properly doccumented :)
 
-### "roadmap" for (cot)ton,
-
-honestly i dont have a whole lot to put here for the time being as im afraid to set up goals too high for myself and end up not being able to achieve them, but, for now:
-
-* Figure out what i wanna do with the syntax (kinda experimental atm) [ ]
-* Add more features to cot as it is somewhat barebones as of now [ ]
-* Split(?) `interpreter.c` so as to keep everything tidy and organised [X]
-* HOPEFULLY and EVENTUALLY one day, some time soon(TM) figure out how to compile cot to uxntal [ ]
-
-## misc but still related to the project:
-
-### cot's logo,
+### cot's logo
 
 ![cot](imgs/cot.png)
 
 this is cot's logo !! its a cogwheel with a cotton flower in the middle !! very cool !! :3
 
-### cotton's mascot,
+### cotton's mascot
 
 ![ton](imgs/ton.png)
 
