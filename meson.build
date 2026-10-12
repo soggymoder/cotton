@@ -9,4 +9,6 @@ src_files = [
   'src/cogs.c',
 ]
 
-executable('cotton', src_files)
+install_man('docs/cotton.1', 'docs/cot.5')
+
+executable('cotton', src_files, install: true,)
