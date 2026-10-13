@@ -10,6 +10,7 @@ void cotton_init
     c->mem_len = 0;
 
     for (int i = 0; i < VARS_SIZE; i++) {
+        
         c->vars[i] = 0;
     }
 }
@@ -18,6 +19,7 @@ void push
 (Cotton *c, int v) 
 {
     if (c->stack_p >= STACK_SIZE) {
+        
         fprintf(stderr, "cotton: stack overflow,., like the website,.., :<\n");
         return;
     }
@@ -29,7 +31,8 @@ int pop
 (Cotton *c) 
 {
     if (c->stack_p <= 0) {
-        fprintf(stderr, "cotton: stack underflow :<\n");
+
+        fprintf(stderr, "cotton: stack underflow :<\n"); 
         return 0;
     }
 

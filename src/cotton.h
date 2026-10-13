@@ -16,12 +16,15 @@
 typedef struct Cotton Cotton;
 
 typedef struct {
+    
     char *name;
     void (*code)(Cotton *c);
+
 } Cog;
 
 struct Cotton {
-    int stack[STACK_SIZE];
+
+	int stack[STACK_SIZE];
     int stack_p;
 
     int jmp_stack[JMP_STACK_SIZE];
@@ -32,6 +35,7 @@ struct Cotton {
     int mem_len;
 
     int vars[VARS_SIZE];
+
 };
 
 void cotton_init

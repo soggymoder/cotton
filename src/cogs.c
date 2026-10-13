@@ -66,9 +66,8 @@ void cog_dotstr
     int ptr = pop(c);
 
     while (c->mem[ptr] != '\0') {
-
+        
         printf("%c", c->mem[ptr]);
-
         ptr++;
     }
 }
@@ -210,7 +209,7 @@ void cog_if
 {
     if (c->jmp_stack_p >= JMP_STACK_SIZE) {
 
-        fprintf(stderr, "cotton: there are too many nested ifs, calm down!! D:\n");
+        fprintf(stderr, "cotton: there are too many nested ifs, calm down!! D:\n"); 
         return;
     }
 
@@ -224,7 +223,7 @@ void cog_else
 {
     if (c->jmp_stack_p <= 0) {
 
-        fprintf(stderr, "cotton: i found an else without an if,., where'd that come from??\n");
+        fprintf(stderr, "cotton: i found an else without an if,., where'd that come from??\n"); 
         return;
     }
 
@@ -242,7 +241,7 @@ void cog_end
 {
     if (c->jmp_stack_p <= 0) {
 
-        fprintf(stderr, "cotton: i found an end without an if,., where'd that come from??\n");
+        fprintf(stderr, "cotton: i found an end without an if,., where'd that come from??\n"); 
         return;
     }
 
@@ -273,4 +272,3 @@ Cog immediates [] = {
     {"until", cog_until},
     {NULL, NULL}
 };
-

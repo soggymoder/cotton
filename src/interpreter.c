@@ -25,7 +25,7 @@ void cotton_compile
 
         if (c->mem_len >= MEM_SIZE - 2) {
 
-        	fprintf(stderr, "cotton: i have ran out of memory,., can't compile anymore :<\n");
+        	fprintf(stderr, "cotton: i have ran out of memory,., can't compile anymore :<\n");        	
             return;
         }
 
@@ -41,9 +41,8 @@ void cotton_compile
             for (i = string_start; line[i] != '\0'; i++) {
 
                 if (line[i] == '"') {
-
+                    
                     line[i] = '\0';
-
                     break;
                 }
 
@@ -166,20 +165,20 @@ void cotton_run
         switch (op) {
 
             case OP_PUSH:
+            
                 push(c, c->mem[c->instruct_p++]);
-
                 break;
 
             case OP_CALL: {
+                
                 int id = c->mem[c->instruct_p++];
                 builtins[id].code(c);
-
                 break;
             }
 
             case OP_JMP: {
+                
                 c->instruct_p = c->mem[c->instruct_p];
-
                 break;
             }
 
@@ -188,9 +187,10 @@ void cotton_run
                 int target = c->mem[c->instruct_p++];
 
                 if (pop(c) == 0) {
+                    
                     c->instruct_p = target;
                 }
-
+                
                 break;
             }
 
@@ -199,11 +199,11 @@ void cotton_run
              	push(c, c->instruct_p);
 
                 while (c->mem[c->instruct_p] != '\0') {
+                    
                     c->instruct_p++;
                 }
                 
-                c->instruct_p++;
-
+                c->instruct_p++; 
                 break;
 
             case OP_KILL:
