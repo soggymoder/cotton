@@ -6,6 +6,7 @@ int main
 (int argc, char **argv)
 {
     if (argc < 2) {
+        
         fprintf(stderr, "cotton: cotton couldn't find any .cot files to run :P\n");        
 		return 1;
     }
@@ -13,6 +14,7 @@ int main
     FILE *f = fopen(argv[1], "r");
 
     if (!f) {
+        
         fprintf(stderr, "cotton: couldn't open \"%s\", is this even a file.,.? :<\n", argv[1]); 
         return 1;
     }
