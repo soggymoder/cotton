@@ -1,4 +1,3 @@
-#include "interpreter.h"
 #include "cotton.h"
 #include <stdio.h>
 
@@ -35,7 +34,6 @@ void cog_div
     int b = pop(c);
     int a = pop(c);
 
-    // Now, i doubt anyone will really be dividing stuff by zero but you never know.., talk about le safety amirite.., heh 
     if (b == 0) {
 
         fprintf(stderr, "cotton: you cant divide by zero, you dummy :P\n");
@@ -50,6 +48,12 @@ void cog_mod
 {
 	int b = pop(c);
 	int a = pop(c);
+
+	if (b == 0) {
+
+		fprintf(stderr, "cotton: you cant modulo a number by zero, you dummy :P\n");
+		return;
+	}
 
 	push(c, a % b);
 }
@@ -72,6 +76,32 @@ void cog_dotstr
     }
 }
 
+void cog_stack
+(Cotton *c)
+{
+	printf("Stack status:\n");
+
+	if (c->stack_p == 0) {
+		
+		printf("Stack is empty");
+
+		return;
+	}
+
+	for (int i = 0; i < c->stack_p; i++) {
+	
+		if (i == c->stack_p - 1) {
+
+			printf("[%d] <- Top\n", c->stack[i]);
+		}
+
+		else {
+
+			printf("[%d]\n", c->stack[i]);
+		}
+	}
+}
+
 // im aware c goes unused here and hence this gives a warning, yes im lazy, might do smth about it another time
 void cog_newline
 (Cotton *c) 
@@ -83,8 +113,8 @@ void cog_newline
 void cog_store
 (Cotton *c)
 {
-    int slot = pop(c);
     int num = pop(c);
+    int slot = pop(c);
 
     if (slot >= 0 && slot < VARS_SIZE) {
 
@@ -93,7 +123,7 @@ void cog_store
 
     else {
 
-        fprintf(stderr, "cotton: i tried to store somewhere that don't exist,, its in the void now.., :(\n");
+        fprintf(stderr, "cotton: tried to store somewhere that don't exist,, its in the void now :(\n");
     }
 }
 
@@ -109,7 +139,7 @@ void cog_fetch
 
     else {
 
-        fprintf(stderr, "cotton: i tried to fetch from somewhere that seemingly don't exist,, erm.,.\n");
+        fprintf(stderr, "cotton: i tried to fetch from somewhere that seemingly don't exist,, erm...\n");
     }
 }
 
@@ -150,6 +180,14 @@ void cog_rotate
 	push(c, a);
 }
 
+void cog_not
+(Cotton *c)
+{
+	int a = pop(c);
+
+	push(c, !a);
+}
+
 void cog_equal
 (Cotton *c)
 {
@@ -157,6 +195,15 @@ void cog_equal
     int a = pop(c);
 
     push(c, a == b ? 1 : 0);
+}
+
+void cog_unequal
+(Cotton *c)
+{
+	int b = pop(c);
+	int a = pop(c);
+
+	push(c, a != b ? 1 : 0);
 }
 
 void cog_lssr
@@ -177,25 +224,62 @@ void cog_grtr
     push(c, a > b ? 1 : 0);
 }
 
+void cog_and
+(Cotton *c)
+{
+	int b = pop(c);
+	int a = pop(c);
+
+	push(c, (a != 0 && b != 0) ? 1 : 0);
+}
+
+void cog_or
+(Cotton *c)
+{
+	int b = pop(c);
+	int a = pop(c);
+
+	push(c, (a != 0 || b != 0) ? 1 : 0);
+}
+
+void cog_true
+(Cotton *c)
+{
+	push(c, 1);
+}
+
+void cog_false
+(Cotton *c)
+{
+	push(c, 0);
+}
+
 Cog builtins[] = {
-    {"+", cog_add},
-    {"-", cog_sub},
-    {"*", cog_mul},
-    {"/", cog_div},
+	{"+", cog_add},
+	{"-", cog_sub},
+	{"*", cog_mul},
+	{"/", cog_div},
 	{"%", cog_mod},
 	{".n", cog_dotnum},
 	{".s", cog_dotstr},
+	{".stk", cog_stack},
 	{"nl", cog_newline},
-    {"->", cog_store},
-    {"@", cog_fetch},
-    {"dup", cog_dup},
-    {"drop", cog_drop},
-    {"swap", cog_swap},
-    {"rot", cog_rotate},
-    {"=", cog_equal},
-    {"<", cog_lssr},
-    {">", cog_grtr},
-    {NULL, NULL}
+	{"->", cog_store},
+	{"@", cog_fetch},
+	{"dup", cog_dup},
+	{"drop", cog_drop},
+	{"swap", cog_swap},
+	{"rot", cog_rotate},
+	{"!", cog_not},
+	{"=", cog_equal},
+	{"!=", cog_unequal},
+	{"<", cog_lssr},
+	{">", cog_grtr},
+	{"&&", cog_and},
+	{"||", cog_or},
+	{"T", cog_true},
+	{"F", cog_false},
+	{NULL, NULL}
 };
 
 /*
@@ -223,7 +307,7 @@ void cog_else
 {
     if (c->jmp_stack_p <= 0) {
 
-        fprintf(stderr, "cotton: i found an else without an if,., where'd that come from??\n"); 
+        fprintf(stderr, "cotton: i found an else without an if.. where'd that come from??\n"); 
         return;
     }
 
@@ -241,7 +325,7 @@ void cog_end
 {
     if (c->jmp_stack_p <= 0) {
 
-        fprintf(stderr, "cotton: i found an end without an if,., where'd that come from??\n"); 
+        fprintf(stderr, "cotton: i found an end without an if.. where'd that come from??\n"); 
         return;
     }
 

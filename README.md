@@ -4,8 +4,6 @@ cotton is a small stack machine for the cot programming language (a concatenativ
 
 cotton is a passion hobby project being made solely by me, so, dont expect anything grandiose or of high quality - even then, suggestions and ideas are always welcome!! :D
 
-*( little disclaimer : as of writting this (05/11/2026) the project is in a bit of a hiatus as i am a bit busy / stuck with how i want to continue the project, however, i do not want this project to die and i DO want to continue it when i feel like the time and place is proper for it!! (not that anyone but me really uses this or cares alot about it, but, even then, thought i'd write this here xP) )*
-
 ## building cotton
 
 ```

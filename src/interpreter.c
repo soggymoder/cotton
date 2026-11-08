@@ -25,7 +25,7 @@ void cotton_compile
 
         if (c->mem_len >= MEM_SIZE - 2) {
 
-        	fprintf(stderr, "cotton: i have ran out of memory,., can't compile anymore :<\n");        	
+        	fprintf(stderr, "cotton: i have ran out of memory.. can't compile anymore :<\n");        	
             return;
         }
 
@@ -48,7 +48,7 @@ void cotton_compile
 
                 else if (line[i] == '\0') {
 
-                    fprintf(stderr, "cotton: you forgot to close a string.,. i cant compile the file until you fix it :P");
+                    fprintf(stderr, "cotton: you forgot to close a string.. i cant compile the file until you fix it :P");
                     return;
                 }
 

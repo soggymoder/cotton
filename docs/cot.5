@@ -34,6 +34,16 @@ Cogs that are processed at compile time to handle the control flow and the progr
 .Bl -tag -width "-> (slot)"
 .It Ic + , - , * , /, %
 Pops two values, does arithmetic, and pushes the result
+.It Ic =, !=, <, >
+Compares two values, then, pushes 1 if the comparision, otherwise, returns 0
+.It Ic !
+Logical not, pops a value and pushes 1 if it was 0, otherwise, pushes 0
+.It Ic &&
+Logical and, pops two values and pushes 1 if both are not zero, otherwise, pushes 0
+.It Ic ||
+Logical or, pops two values and pushes 1 if either value is not zero, otherwise, pushes 0
+.It Ic T, F
+T stands for true (1), F stands for false (0), pretty straightforward 
 .It Ic --
 Comments out a line, currently there isn't any multiline support,, sowwe,, >.<
 .It Ic dup
@@ -43,7 +53,7 @@ Swaps the top two values on the stack
 .It Ic drop
 Discards/drops the top value on the stack
 .It Ic rot
-Pops three values, rotates them around, so, the top-most value goes to the bottom and the latter two go up
+Pops the top three values, moves the top most value to the bottom
 .It Ic ->
 Pops a value and a slot index, then stores the value in that same variable slot
 .It Ic @
@@ -52,6 +62,8 @@ Pops a slot index and pushes the stored value back onto the stack
 Prints a number
 .It Ic .s
 Prints a string 
+.It Ic .stk
+Prints the current state of the stack - does NOT modify the stack (its meant to be more of a debugging tool of sorts
 .It Ic nl
 Meant to be used alongside .n and .s, makes numbers and strings print in a new line 
 .It Ic ? if
