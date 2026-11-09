@@ -1,17 +1,20 @@
 #ifndef COTTON_H
 #define COTTON_H
 
-#define OP_PUSH        0
-#define OP_CALL        1
-#define OP_KILL        2
-#define OP_JMP         3
-#define OP_FJMP        4
-#define OP_PUSH_STR	   5
+#include <stdbool.h>
 
-#define STACK_SIZE     256
-#define JMP_STACK_SIZE 64
-#define MEM_SIZE       4096
-#define VARS_SIZE      256
+#define OP_PUSH_INT	   0
+#define OP_PUSH_STR    1
+#define OP_CALL        2
+#define OP_KILL        3
+#define OP_JMP         4
+#define OP_FJMP        5
+
+#define STACK_SIZE      256
+#define CTRL_STACK_SIZE 64
+#define MEM_SIZE        4096
+#define INT_VARS_SIZE   256
+#define STR_VARS_SIZE   256
 
 typedef struct Cotton Cotton;
 
@@ -25,17 +28,20 @@ typedef struct {
 struct Cotton {
 
 	int stack[STACK_SIZE];
-    int stack_p;
+    int stack_ptr;
 
-    int jmp_stack[JMP_STACK_SIZE];
-    int jmp_stack_p; 
+    int ctrl_stack[CTRL_STACK_SIZE];
+    int ctrl_stack_ptr; 
 
     int mem[MEM_SIZE];
-    int instruct_p;
+    int instruction_ptr;
     int mem_len;
 
-    int vars[VARS_SIZE];
+    int  int_vars[INT_VARS_SIZE];
+	bool int_vars_assigned[INT_VARS_SIZE];
 
+	int str_vars[STR_VARS_SIZE];
+	bool str_vars_assigned[STR_VARS_SIZE];
 };
 
 void cotton_init

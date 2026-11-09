@@ -48,7 +48,7 @@ void cotton_compile
 
                 else if (line[i] == '\0') {
 
-                    fprintf(stderr, "cotton: you forgot to close a string.. i cant compile the file until you fix it :P");
+                    fprintf(stderr, "cotton: you forgot to close a string.. i cant compile the file until you fix it :P\n");
                     return;
                 }
 
@@ -120,7 +120,7 @@ void cotton_compile
 
                     if (is_num) {
 
-                        c->mem[c->mem_len++] = OP_PUSH;
+                        c->mem[c->mem_len++] = OP_PUSH_INT;
                         c->mem[c->mem_len++] = atoi(tok);
                     } 
 
@@ -156,55 +156,55 @@ void cotton_compile
 void cotton_run
 (Cotton *c)
 {
-    c->instruct_p = 0;
+    c->instruction_ptr = 0;
 
-    while (c->instruct_p < c->mem_len) {
+    while (c->instruction_ptr < c->mem_len) {
         
-        int op = c->mem[c->instruct_p++];
+        int op = c->mem[c->instruction_ptr++];
 
         switch (op) {
 
-            case OP_PUSH:
+            case OP_PUSH_INT:
             
-                push(c, c->mem[c->instruct_p++]);
+                push(c, c->mem[c->instruction_ptr++]);
                 break;
+
+			case OP_PUSH_STR:
+
+				push(c, c->instruction_ptr);
+
+				while (c->mem[c->instruction_ptr] != '\0') {
+
+					c->instruction_ptr++;
+				}
+
+				c->instruction_ptr++;
+				break;
 
             case OP_CALL: {
                 
-                int id = c->mem[c->instruct_p++];
+                int id = c->mem[c->instruction_ptr++];
                 builtins[id].code(c);
                 break;
             }
 
             case OP_JMP: {
                 
-                c->instruct_p = c->mem[c->instruct_p];
+                c->instruction_ptr = c->mem[c->instruction_ptr];
                 break;
             }
 
             case OP_FJMP: {
 
-                int target = c->mem[c->instruct_p++];
+                int target = c->mem[c->instruction_ptr++];
 
                 if (pop(c) == 0) {
                     
-                    c->instruct_p = target;
+                    c->instruction_ptr = target;
                 }
                 
                 break;
             }
-
-            case OP_PUSH_STR:
-
-             	push(c, c->instruct_p);
-
-                while (c->mem[c->instruct_p] != '\0') {
-                    
-                    c->instruct_p++;
-                }
-                
-                c->instruct_p++; 
-                break;
 
             case OP_KILL:
                 
