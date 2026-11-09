@@ -1,6 +1,6 @@
 .Dd September 2026
 .Dt COT 5
-.Os cotton 0.1
+.Os cotton 0.1.1
 .Sh NAME
 .Nm cot
 .Nd the cot programming language
@@ -63,7 +63,9 @@ Prints a number
 .It Ic .s
 Prints a string 
 .It Ic .stk
-Prints the current state of the stack - does NOT modify the stack (its meant to be more of a debugging tool of sorts
+Prints the current state of the stack - does NOT modify the stack (its meant to be more of a debugging tool of sorts)
+.It Ic .vars
+Prints the currently assigned variables and their values - does NOT modify any variables (just like .stk, its more of a debugging tool)
 .It Ic nl
 Meant to be used alongside .n and .s, makes numbers and strings print in a new line 
 .It Ic ? if
