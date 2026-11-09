@@ -58,136 +58,6 @@ void cog_mod
 	push(c, a % b);
 }
 
-void cog_dotnum
-(Cotton *c)
-{
-	printf("%d\n", pop(c));
-}
-
-void cog_dotstr
-(Cotton *c)
-{ 
-    int ptr = pop(c);
-
-    while (c->mem[ptr] != '\0') {
-        
-        printf("%c", c->mem[ptr]);
-        ptr++;
-    }
-}
-
-void cog_stack
-(Cotton *c)
-{
-	printf("Stack status:\n");
-
-	if (c->stack_p == 0) {
-		
-		printf("Stack is empty");
-
-		return;
-	}
-
-	for (int i = 0; i < c->stack_p; i++) {
-	
-		if (i == c->stack_p - 1) {
-
-			printf("[%d] <- Top\n", c->stack[i]);
-		}
-
-		else {
-
-			printf("[%d]\n", c->stack[i]);
-		}
-	}
-}
-
-// im aware c goes unused here and hence this gives a warning, yes im lazy, might do smth about it another time
-void cog_newline
-(Cotton *c) 
-{
-	printf("\n");
-}
-
-// while forth does use ! and @, im quirky and #notlikeothergirls so im changing ! to -> bc i think it makes more sense :P
-void cog_store
-(Cotton *c)
-{
-    int num = pop(c);
-    int slot = pop(c);
-
-    if (slot >= 0 && slot < VARS_SIZE) {
-
-        c->vars[slot] = num;
-    } 
-
-    else {
-
-        fprintf(stderr, "cotton: tried to store somewhere that don't exist,, its in the void now :(\n");
-    }
-}
-
-void cog_fetch
-(Cotton *c)
-{
-    int slot = pop(c);
-
-    if (slot >= 0 && slot < VARS_SIZE) {
-
- 		push(c, c->vars[slot]);
-    } 
-
-    else {
-
-        fprintf(stderr, "cotton: i tried to fetch from somewhere that seemingly don't exist,, erm...\n");
-    }
-}
-
-void cog_dup
-(Cotton *c)
-{
-    int a = pop(c);
-
-    push(c, a);
-    push(c, a);
-}
-
-void cog_drop
-(Cotton *c)
-{
-    pop(c);
-}
-
-void cog_swap
-(Cotton *c)
-{
-    int b = pop(c);
-    int a = pop(c);
-
-    push(c, b);
-    push(c, a);
-}
-
-void cog_rotate
-(Cotton *c)
-{
-	int a = pop(c);
-	int b = pop(c);
-	int c_ = pop(c);
-
-	push(c, b);
-	push(c, c_);
-	push(c, a);
-}
-
-void cog_not
-(Cotton *c)
-{
-	int a = pop(c);
-
-	push(c, !a);
-}
-
 void cog_equal
 (Cotton *c)
 {
@@ -224,6 +94,16 @@ void cog_grtr
     push(c, a > b ? 1 : 0);
 }
 
+
+void cog_not
+(Cotton *c)
+{
+	int a = pop(c);
+
+	push(c, !a);
+}
+
+
 void cog_and
 (Cotton *c)
 {
@@ -254,31 +134,156 @@ void cog_false
 	push(c, 0);
 }
 
+void cog_dup
+(Cotton *c)
+{
+    int a = pop(c);
+
+    push(c, a);
+    push(c, a);
+}
+
+void cog_swap
+(Cotton *c)
+{
+    int b = pop(c);
+    int a = pop(c);
+
+    push(c, b);
+    push(c, a);
+}
+
+void cog_drop
+(Cotton *c)
+{
+    pop(c);
+}
+
+void cog_rotate
+(Cotton *c)
+{
+	int a = pop(c);
+	int b = pop(c);
+	int c_ = pop(c);
+
+	push(c, b);
+	push(c, c_);
+	push(c, a);
+}
+
+// while forth does use ! and @, im quirky and #notlikeothergirls so im changing ! to -> bc i think it makes more sense :P
+void cog_store
+(Cotton *c)
+{
+    int num = pop(c);
+    int slot = pop(c);
+
+    if (slot >= 0 && slot < VARS_SIZE) {
+
+        c->vars[slot] = num;
+    }
+
+    else {
+
+        fprintf(stderr, "cotton: tried to store somewhere that don't exist,, its in the void now :(\n");
+    }
+}
+
+void cog_fetch
+(Cotton *c)
+{
+    int slot = pop(c);
+
+    if (slot >= 0 && slot < VARS_SIZE) {
+
+ 		push(c, c->vars[slot]);
+    }
+
+    else {
+
+        fprintf(stderr, "cotton: i tried to fetch from somewhere that seemingly don't exist,, erm...\n");
+    }
+}
+
+void cog_dotnum
+(Cotton *c)
+{
+	printf("%d\n", pop(c));
+}
+
+void cog_dotstr
+(Cotton *c)
+{
+    int ptr = pop(c);
+
+    while (c->mem[ptr] != '\0') {
+
+        printf("%c", c->mem[ptr]);
+        ptr++;
+    }
+}
+
+
+void cog_dotstack
+(Cotton *c)
+{
+	printf("Stack status:\n");
+
+	if (c->stack_p == 0) {
+
+		printf("Stack is empty");
+
+		return;
+	}
+
+	for (int i = 0; i < c->stack_p; i++) {
+
+		if (i == c->stack_p - 1) {
+
+			printf("[%d] <- Top\n", c->stack[i]);
+		}
+
+		else {
+
+			printf("[%d]\n", c->stack[i]);
+		}
+	}
+}
+
+// im aware c goes unused here and hence this gives a warning, yes im lazy, might do smth about it another time
+void cog_newline
+(Cotton *c)
+{
+	printf("\n");
+}
+
+
+
 Cog builtins[] = {
 	{"+", cog_add},
 	{"-", cog_sub},
 	{"*", cog_mul},
 	{"/", cog_div},
 	{"%", cog_mod},
-	{".n", cog_dotnum},
-	{".s", cog_dotstr},
-	{".stk", cog_stack},
-	{"nl", cog_newline},
-	{"->", cog_store},
-	{"@", cog_fetch},
-	{"dup", cog_dup},
-	{"drop", cog_drop},
-	{"swap", cog_swap},
-	{"rot", cog_rotate},
-	{"!", cog_not},
 	{"=", cog_equal},
 	{"!=", cog_unequal},
 	{"<", cog_lssr},
 	{">", cog_grtr},
+	{"!", cog_not},
 	{"&&", cog_and},
 	{"||", cog_or},
 	{"T", cog_true},
 	{"F", cog_false},
+	{"dup", cog_dup},
+	{"swap", cog_swap},
+	{"drop", cog_drop},
+	{"rot", cog_rotate},
+	{"->", cog_store},
+	{"@", cog_fetch},
+	{".n", cog_dotnum},
+	{".s", cog_dotstr},
+	{".stk", cog_dotstack},
+	{"nl", cog_newline},
 	{NULL, NULL}
 };
 
