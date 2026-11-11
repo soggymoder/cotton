@@ -41,7 +41,7 @@ void cotton_compile
             for (i = string_start; line[i] != '\0'; i++) {
 
                 if (line[i] == '"') {
-                    
+
                     line[i] = '\0';
                     break;
                 }
@@ -75,7 +75,7 @@ void cotton_compile
             
             while (line[i] != ' ' && line[i] != '\0') {
 
-                i++;
+				i++;
             }
             
             // Here i just terminate the token temporarily
@@ -100,6 +100,7 @@ void cotton_compile
                     if (strcmp(tok, immediates[j].name) == 0) {
 
                         immediates[j].code(c);
+
                         found_immediate = 1;
                         break;
                     }
@@ -134,6 +135,7 @@ void cotton_compile
 
                                 c->mem[c->mem_len++] = OP_CALL;
                                 c->mem[c->mem_len++] = j;
+
                                 found = 1;
                                 break;
                             }

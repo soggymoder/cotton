@@ -232,7 +232,7 @@ void cog_dotstack
 
 	if (c->stack_ptr == 0) {
 
-		fprintf(stderr, "cotton: stack is empty so far\n");
+		fprintf(stderr, "cotton: the stack is empty so far,,\n");
 
 		return;
 	}
@@ -276,7 +276,7 @@ void cog_dotvars
 
 	if ( var_finder == false) {
 
-		fprintf(stderr, "cotton: no variables have been assigned yet\n");
+		fprintf(stderr, "cotton: no variables have been assigned yet,,\n");
 	}
 }
 

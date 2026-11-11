@@ -35,6 +35,6 @@ this is cot's logo !! its a cogwheel with a cotton flower in the middle !! very 
 
 this is (cot)ton's mascot!! his name is ton!! he was drawn by me using old cotton's own colour palette!! say hi to ton!!
 
-### wee bit of cotton history
+### misc
 
-cotton originally started as a slightly modified CHIP8 emulator, then was repurposed into being a fantasy computer inspired by [uxn](https://100r.co/site/uxn.html) but has ultimately ended up turning into what you're seeing right now :) - the old version of the project can be found on the 'old-cotton' branch of this repo, and, as you may be able to guess, its effectively dead and wont get updated anymore, being there purely for archival purposes (subject to change) xP
+did yuo knuow,.., did.,., did yuo know that if you use void linux you can get cotton from xbps-src.., yeag,., you should totally check out ![my very awesome overlay](https://git.ouppyawa.xyz/null-pkgs.git/),., eyes emoji,,. ooooooo..,,
